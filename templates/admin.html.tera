@@ -7,8 +7,8 @@
     <body>
 
       
-
-        <div class="row">
+        <div class="container">
+          <div  class="row">
             <div class="col-3">
               <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Add Project</a>
@@ -55,11 +55,18 @@
                         <form action="admin/edit/{{p.id}}" method="GET">
                           <button type="submit" class="btn btn-info">Edit</button>
                         </form>
-                        
-                        </div>
+
+                        <form action="admin/make_primary/{{p.id}}" method="POST">
+                          {% if p.is_primary == true %}
+                          <button type="submit" class="btn btn-info" disabled>Make primary</button>
+                          {% endif %}
+                          {% if p.is_primary == false %}
+                          <button type="submit" class="btn btn-info">Make primary</button>
+                          {% endif %}
+                        </form>
 
 
-
+                      </div>
                     {% endfor %}
                   </div>
                 </div>
@@ -68,6 +75,8 @@
               </div>
             </div>
           </div>
+        </div>
+
         
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

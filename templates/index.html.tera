@@ -66,6 +66,27 @@
                          <div class="content">
 
                         {% for p in projects%}
+
+                            {% if p.is_primary == true %}
+                                 <div class="item featured text-center">
+                                 <h3 class="title"><a href="{{ p.link }}" target="_blank">{{ p.title }}</a></h3>
+                                 <div class="featured-image">
+                                     <a href="{{p.link}}" target="_blank">
+                                     <img class="img-fluid project-image" src="{{ p.img_path }}" alt="project name" />
+                                     </a>
+                                     <div class="ribbon">
+
+                                 <div class="desc text-left">
+                                   <p>The OHBP will (hopefully) become an easy to use and understand programming language built around scalability and performance. So with HoneyBadger, you should be able to whip it out to write a quick script or create a robust application with it. I want it to basically be a very accessible language that resembles more C and C++.</p>
+                                 </div><!--//desc-->
+                                 <!-- <a class="btn btn-cta-secondary" href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank"><i class="fas fa-thumbs-up"></i> Contribute to the project!</a> -->
+                             </div><!--//item-->
+
+                             <hr class="divider" />
+                            {% endif %}
+
+                            {% if p.is_primary == false %}
+
                             <div class="item row">
                                  <a class="col-md-4 col-12" href="{{ p.link }}" target="_blank">
                                  <img class="img-fluid project-image" src="{{ p.img_path }}" alt="project name" />
@@ -77,6 +98,9 @@
                              </div><!--//item-->
 
                              <hr class="divider" />
+                            {% endif %}
+
+                           
                         {% endfor %}
 
 {# 
