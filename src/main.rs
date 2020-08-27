@@ -7,38 +7,38 @@ extern crate diesel;
 extern crate dotenv;
 #[macro_use]
 extern crate dotenv_codegen;
+extern crate bcrypt;
 
 pub mod schema;
 pub mod models;
+pub mod add_component;
+pub mod remove_component;
+
 
 extern crate rocket_auth_login as auth;
 use auth::authorization::*;
 
 use rocket_contrib::templates::Template;
-use rocket_contrib::databases::{database, diesel::PgConnection};
-use rocket_contrib::databases::diesel::Connection;
-
 
 use rocket::response::{NamedFile, Redirect, Flash};  
-use rocket::http::{Cookie, Cookies};
+use rocket::http::{Cookies};
 use rocket::request::Form;
 
 
-use std::collections::HashMap;
 use std::path::{PathBuf, Path};
 
 mod admin;
 use admin::*;
 
-mod lib;
-
 use models::*;
 use schema::*;
 
+use add_component::*;
+use remove_component::*;
+
 use diesel::prelude::*;
 
-#[database("postgres")]
-pub struct DbConn(PgConnection);
+
 
 #[get("/")]
 fn index(conn: DbConn) -> Template
@@ -46,7 +46,30 @@ fn index(conn: DbConn) -> Template
     let mut projects = projects::table.load::<Project>(&*conn)
     .unwrap();
     projects.sort_by(|a, b| b.is_primary.cmp(&a.is_primary));
-    let template = ProjectTemplate {projects : projects};
+    let skills = skills::table.load::<Skill>(&*conn).unwrap();
+    let education = education::table.load::<Education>(&*conn).unwrap();
+    let experience = experience::table.load::<Experience>(&*conn).unwrap();
+    let about_me_maybe = about_me::table
+    .limit(1)
+    .load::<AboutMe>(&*conn).unwrap()
+    .pop();
+
+    let about_me = match about_me_maybe
+    {
+        Some(abt_me) => abt_me,
+        None => {
+            AboutMe{id: 0, description: "".to_string()}
+        }
+    };
+
+    let template = MainTemplate 
+    {
+        projects : projects,
+        skills: skills,
+        education: education,
+        experience: experience,
+        about_me: about_me
+    };
     Template::render("index", &template)
 }
 
@@ -54,39 +77,35 @@ fn index(conn: DbConn) -> Template
 fn admin(conn: DbConn, _user: AuthCont<AdministratorCookie> ) -> Template
 {
     let projects = projects::table.load::<Project>(&*conn).unwrap();
-    let template = ProjectTemplate {projects : projects};
+    let skills = skills::table.load::<Skill>(&*conn).unwrap();
+    let education = education::table.load::<Education>(&*conn).unwrap();
+    let experience = experience::table.load::<Experience>(&*conn).unwrap();
+    let about_me_maybe = about_me::table
+    .limit(1)
+    .load::<AboutMe>(&*conn).unwrap()
+    .pop();
+
+    let about_me = match about_me_maybe
+    {
+        Some(abt_me) => abt_me,
+        None => {
+            AboutMe{id: 0, description: "".to_string()}
+        }
+    };
+    let template = MainTemplate 
+    {
+        projects : projects,
+        skills: skills,
+        education: education,
+        experience: experience,
+        about_me: about_me
+    };
     Template::render("admin", &template)
 }
 
-#[post("/add", data = "<project>")]
-fn post_project(conn: DbConn, project: Form<ProjectForm> ) -> Result<Redirect, diesel::result::Error>
-{
-    let new_project = NewProject
-    {
-        title: project.title.clone(),
-        description: project.description.clone(),
-        link: project.link.clone(),
-        img_path: project.img_path.clone()
-    };
 
-    let result = diesel::insert_into(projects::table)
-    .values(&new_project)
-    .execute(&*conn);
 
-    match result
-    {
-        Ok(_) => Ok(Redirect::to("/")),
-        Err(p) => Err(p)
-    }
-}
 
-#[post("/delete/<post_id>")]
-fn delete_project(conn: DbConn, post_id: i32, _user: AuthCont<AdministratorCookie>) -> Result<Redirect, diesel::result::Error>
-{
-    diesel::delete(projects::table.filter(projects::id.eq(post_id))).execute(&*conn)?;
-
-    Ok(Redirect::to("/admin"))
-}
 
 #[get("/edit/<post_id>")]
 fn edit_project(conn: DbConn, post_id: i32, _user: AuthCont<AdministratorCookie>) -> Template
@@ -164,7 +183,7 @@ fn main() {
 
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])
-    .mount("/admin", routes![admin, post_project, delete_project, edit_project, update_project, make_primary])
+    .mount("/admin", routes![admin, add_project, add_skill, add_experience, add_education, add_about_me, delete_project, delete_education, delete_experience, delete_skill,  edit_project, update_project, make_primary])
     .attach(Template::fairing())
     .attach(DbConn::fairing())
     .launch();

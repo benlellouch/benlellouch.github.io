@@ -45,8 +45,11 @@
                 </ul>
             </div><!--//profile-->
             <a class="btn btn-cta-primary float-right mr-1" href="assets/resume/resume.pdf" target="_blank"><i class="fas fa-file"></i><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Download my resume!"> Resume</a>
+            <a class="btn btn-cta-primary float-right mr-1" href="/login">Login</a>
         </div><!--//container-->
     </header><!--//header-->
+
+      
 
     <div class="container sections-wrapper">
         <div class="row">
@@ -55,7 +58,7 @@
                     <div class="section-inner">
                         <h2 class="heading">About Me</h2>
                         <div class="content">
-                            <p>I am computer science student at the University of Southampton. My passion for computer science derives not simply from the pleasure of problem solving but also as an activity that allows me to express my creativity through building novel entities of code. I am the treasurer of the Electronics and Computer Science Society, the biggest society of the university. I am also interested in finance and investing. In my free time, I enjoy reading books on investing or about science. I also enjoy going to the gym or going out for a run with friends. And I love watches and cars.  </p>
+                            <p> {{ about_me.description }}</p>
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -77,7 +80,7 @@
                                      <div class="ribbon">
 
                                  <div class="desc text-left">
-                                   <p>The OHBP will (hopefully) become an easy to use and understand programming language built around scalability and performance. So with HoneyBadger, you should be able to whip it out to write a quick script or create a robust application with it. I want it to basically be a very accessible language that resembles more C and C++.</p>
+                                   <p>{{ p.description}}</p>
                                  </div><!--//desc-->
                                  <!-- <a class="btn btn-cta-secondary" href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank"><i class="fas fa-thumbs-up"></i> Contribute to the project!</a> -->
                              </div><!--//item-->
@@ -102,51 +105,6 @@
 
                            
                         {% endfor %}
-
-{# 
-                             <div class="item featured text-center">
-                                 <h3 class="title"><a href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank">Open HoneyBadger Project</a></h3>
-                                 <p class="summary">A flexible language good for scripting and for larger projects</p>
-                                 <div class="featured-image">
-                                     <a href="https://www.facebook.com/events/2289596917737722/" target="_blank">
-                                     <img class="img-fluid project-image" src="assets/images/projects/project-featured.jpg" alt="project name" />
-                                     </a>
-                                     <div class="ribbon">
-
-                                 <div class="desc text-left">
-                                   <p>The OHBP will (hopefully) become an easy to use and understand programming language built around scalability and performance. So with HoneyBadger, you should be able to whip it out to write a quick script or create a robust application with it. I want it to basically be a very accessible language that resembles more C and C++.</p>
-                                 </div><!--//desc-->
-                                 <!-- <a class="btn btn-cta-secondary" href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank"><i class="fas fa-thumbs-up"></i> Contribute to the project!</a> -->
-                             </div><!--//item-->
-
-                             <hr class="divider" />
-
-
-                             <div class="item row">
-                                 <a class="col-md-4 col-12" href="https://hack-the-south-2020.devpost.com/" target="_blank">
-                                 <img class="img-fluid project-image" src="assets/images/projects/hts.jpg" alt="project name" />
-                                 </a>
-                                 <div class="desc col-md-8 col-12">
-                                     <h3 class="title"><a href="https://github.com/benlellouch/HackTheSouth20" target="_blank">WhiteStock Sentiment Analysis</a></h3>
-                                     <p class="mb-2">We use some Sentiment Analysis, some fancy maths, and some computer magic we provide meaningful information to plan your next move in the market!
-                                        We use the general opinion of the public expressed on social media about companies to predict market trends of stocks in the S&P 100 index. </p>
-                                 </div><!--//desc-->
-                             </div><!--//item-->
-
-                             <hr class="divider" />
-
-
-                             <div class="item row">
-                                <a class="col-md-4 col-12" href="https://campushack19.devpost.com/" target="_blank">
-                                <img class="img-fluid project-image" src="assets/images/projects/project-2.png" alt="project name" />
-                                </a>
-                                <div class="desc col-md-8 col-12">
-                                    <h3 class="title"><a href="https://github.com/michael-ryan/CampusHack19" target="_blank">We Will Judge You - CampusHack19</a></h3>
-                                    <p class="mb-2">We wanted to create an application that fetches a large amount of tweets around a trending topic and apply sentiment analysis methods on those tweets in order to infer the publics opinion around the subject.
-                                    Our "sentiment analyser" was very primitive but it is an idea that I want to continue to develop when I have the time. </p>
-                                </div><!--//desc-->
-                            </div> #}
-
                          </div><!--//content-->
                      </div><!--//section-inner-->
                  </section><!--//section-->
@@ -155,25 +113,15 @@
                     <div class="section-inner">
                         <h2 class="heading">Work Experience</h2>
                         <div class="content">
+                            {% for e in experience %}
+
                             <div class="item">
-                                <h3 class="title">Software Engineer Intern - <span class="place"><a href="http://www.raymarine.com/">Raymarine</a></span> <span class="year">(Summer 2019)</span></h3>
-                                <p>I have overhauled the diagnostics section of LightHouse 3 (Raymarine's proprietary OS) in order to give the end-user more information about the devices connected to the network and more functionality such as giving the ability to calibrate various types of sensors as well as renaming devices. I have also created a common back-end for the managing and storing of custom names which reduces redundancy of data as well as data inconsistencies.
-                                I also attended daily Scrum meetings during which I would report my progress to the Scrum master. </p>
+                                <h3 class="title">{{ e.title }}}- <span class="place"><a href="{{ e.org_link}}">{{ e.company }}</a></span> <span class="year">({{ e.year }})</span></h3>
+                                <p>{{ e.description }} </p>
                             </div><!--//item-->
-                            <div class="item">
-                                <h3 class="title">Spring Intern - <span class="place"><a href="https://www.jpmorgan.com">J.P Morgan</a></span> <span class="year">(8-12 Apr 2019)</span></h3>
-                                <p>During this week, I networked with junior and senior employees of the company as well as shadowed software engineers. I also took part in two competitions.
-                                The first competition was a <a href="https://robocode.sourceforge.io/">Robocode</a> hackathon in which we had to program a primitive artificial intelligence so that our tank
-                                could seek and destroy other tanks. My Team and I ranked 2nd in the battle of Bournemouth (10 teams) and in the top 5 in the battle of the UK (teams from Bournemouth, London and Glasgow).
-                                The second challenge, which my team and I won, was an algorithmics competition (bracket evaluation/ expression parsing, optimisation problems).</p>
-                            </div><!--//item-->
-                          <div class="item">
-                              <h3 class="title">Polyvalent Employee - <span class="place"><a href="https://www.restaurants.mcdonalds.fr/mcdonalds-marseille-gare-saint-charles">MacDonald's</a></span> <span class="year">(Summer 2018)</span></h3>
-                              <p>I worked as a cook at one of the busiest MacDonald's in the whole of France (the restaurant was situated inside of a train station). I had to get to the restaurant by 6 am in order to setup and organise the kitchen as well as plan the amount of food that was going to be needed throughout the day.
-                              Once the kitchen was ready, I would start to get all of the food out of the cold storage and place it in the freezers situated next to the fryers and stoves so that other cooks would be able to quickly access the food
-                              when the midday rush comes around. I would then prepare the condiments, cut tomatoes and prepare the salad. All of these preparations had to be done before quarter to 7 so that I could start cooking breakfast
-                            by that time. I would then have a break at around 10 and would resume at around 10.30 as that's when the rush starts. It is called a rush because cooks usually end up running around preparing burgers because of the high demand. </p>
-                          </div><!--//item-->
+
+                            {% endfor %}
+
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -212,37 +160,18 @@
                         <div class="content">
                             <div class="skillset">
 
+                                {% for s in skills %}
+
                                 <div class="item">
-                                    <h3 class="level-title">Java<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="Coursework, hackathons ..."><i class="fas fa-info-circle"></i>~ 1 yr</span></h3>
+                                    <h3 class="level-title">{{ s.name }}<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="{{ s.origin }}"><i class="fas fa-info-circle"></i>{{ s.yoxp }}</span></h3>
                                     <!--<div class="level-bar">
                                         <div class="level-bar-inner" data-level="96%">
                                         </div>
                                     </div> -->
                                 </div><!--//item-->
 
-                                <div class="item">
-                                    <h3 class="level-title">C++ &amp; Qt/QML<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="Raymarine internship"><i class="fas fa-info-circle"></i>< 1 yr </span></h3>
-                                    <!--<div class="level-bar">
-                                        <div class="level-bar-inner" data-level="96%">
-                                        </div>
-                                    </div> -->
-                                </div><!--//item-->
-                                    
-                                <div class="item">
-                                    <h3 class="level-title">Haskell<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="COMP2209 and COMP2212"><i class="fas fa-info-circle"></i>< 1 yr </span></h3>
-                                    <!--<div class="level-bar">
-                                        <div class="level-bar-inner" data-level="96%">
-                                        </div>
-                                    </div> -->
-                                </div><!--//item-->
+                                {% endfor %}
 
-                                <div class="item">
-                                    <h3 class="level-title">Scrum<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="Raymarine internship"><i class="fas fa-info-circle"></i>< 1 yr </span></h3>
-                                    <!--<div class="level-bar">
-                                        <div class="level-bar-inner" data-level="96%">
-                                        </div>
-                                    </div> -->
-                                </div><!--//item-->
                             </div>
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -252,10 +181,12 @@
                     <div class="section-inner">
                         <h2 class="heading">Education</h2>
                         <div class="content">
+                            {% for e in education %}
                             <div class="item">
-                                <h3 class="title"><i class="fas fa-graduation-cap"></i> BSc Computer Science</h3>
-                                <h4 class="university">University of Southampton <span class="year">(2018-2021)</span></h4>
+                                <h3 class="title"><i class="fas fa-graduation-cap"></i> {{e.major}}</h3>
+                                <h4 class="university">{{e.institution}} <span class="year">{{e.year}}</span></h4>
                             </div><!--//item-->
+                            {% endfor %}
                         </div><!--//content-->
                     </div><!--//section-inner-->
                 </aside><!--//section-->

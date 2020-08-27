@@ -1,8 +1,10 @@
 use auth::authorization::*;
-use auth::sanitization::*;
 use std::collections::HashMap;
 use rocket::{Request, Outcome};
 use rocket::request::FromRequest;
+use bcrypt::{verify};
+use std::fs::File;
+use std::io::prelude::*;
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]    
@@ -61,7 +63,13 @@ impl AuthorizeForm for AdministratorForm
     fn authenticate(&self) -> Result<Self::CookieType, AuthFail>
     {
         println!("Authenticating {} with password: {}", &self.username, &self.password);
-        if &self.username == "administrator" && &self.password != "" {
+        // let newhash = hash(&self.password, DEFAULT_COST).unwrap();
+        // println!("newhash {}", newhash);
+        let mut hash = String::new();
+        let mut file = File::open(".pswhash").unwrap();
+        let _  = file.read_to_string(&mut hash);
+        println!("hash :{}", hash);
+        if &self.username == dotenv!["UNAME"] && verify(&self.password, &hash).unwrap() {
             Ok(
                 AdministratorCookie {
                     userid: 1,
@@ -71,7 +79,7 @@ impl AuthorizeForm for AdministratorForm
             )
         } else {
             Err(
-                AuthFail::new(self.username.to_string(), "Incorrect username".to_string())
+                AuthFail::new(self.username.to_string(), "Invalid credentials".to_string())
             )
         }
     }

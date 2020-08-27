@@ -21,53 +21,298 @@
               <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
                     <div class="mx-auto" style="width: 300px;">
-                      <form action="admin/add" target="_self" method="POST">
+                      <div id="accordion">
+                        <div class="card">
+                          <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Project
+                              </button>
+                            </h5>
+                          </div>
+
+                          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body">
+                              <form action="admin/add/project" target="_self" method="POST">
+                                <div class="form-group">
+                                  <label for="title">Title</label>
+                                  <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
+                                </div>
+                                <div class="form-group">
+                                  <label for="description">Description</label>
+                                  <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                                </div>
+                                <div class="form-group">
+                                    <label for="link">Link</label>
+                                    <input type="text" class="form-control" id="link" name="link" placeholder="Link">
+                                </div>
+                                <div class="form-group">
+                                    <label for="img_path">Image</label>
+                                    <input type="text" class="form-control" id="img_path" name="img_path" placeholder="Image path">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                              </form>
+                            </div>
+                          </div>
+                      </div>
+
+                      <div class="card">
+                        <div class="card-header" id="headingTwo">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              Skills
+                            </button>
+                          </h5>
+                      </div>
+
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                        <div class="card-body">
+                          <form action="admin/add/skill" target="_self" method="POST">
+                            <div class="form-group">
+                              <label for="skill">Skill</label>
+                              <input type="text" class="form-control" id="name" name="name" placeholder="Enter Skill">
+                            </div>
+                            <div class="form-group">
+                              <label for="origin">Origin</label>
+                              <input type="text" class="form-control" id="origin" name="origin" placeholder="Origin">
+                            </div>
+                            <div class="form-group">
+                                <label for="yoxp">Years of Experience</label>
+                                <input type="text" class="form-control" id="yoxp" name="yoxp" placeholder="Enter years">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Experience
+                          </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                      <div class="card-body">
+
+                        <form action="admin/add/experience" target="_self" method="POST">
                         <div class="form-group">
                           <label for="title">Title</label>
-                          <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
+                          <input type="text" class="form-control" id="title" name="title" placeholder="Job Title">
                         </div>
                         <div class="form-group">
-                          <label for="description">Description</label>
-                          <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                          <label for="company">Company</label>
+                          <input type="text" class="form-control" id="company" name="company" placeholder="Enter Company Name">
                         </div>
                         <div class="form-group">
-                            <label for="link">Link</label>
-                            <input type="text" class="form-control" id="link" name="link" placeholder="Link">
+                            <label for="year">Years of Employement</label>
+                            <input type="text" class="form-control" id="year" name="year" placeholder="Enter years">
                         </div>
                         <div class="form-group">
-                            <label for="img_path">Image</label>
-                            <input type="text" class="form-control" id="img_path" name="img_path" placeholder="Image path">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">
+                        </div>
+                        <div class="form-group">
+                            <label for="org_link">Organisation Link</label>
+                            <input type="text" class="form-control" id="org_link" name="org_link" placeholder="Company website link">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                       </form>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                      <div class="card-header" id="headingFour">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            Education
+                          </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                      <div class="card-body">
+                      <form action="admin/add/education" target="_self" method="POST">
+                      <div class="form-group">
+                        <label for="major">Major</label>
+                        <input type="text" class="form-control" id="major" name="major" placeholder="Degree Title">
+                      </div>
+                      <div class="form-group">
+                        <label for="institution">Institution</label>
+                        <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter School Name">
+                      </div>
+                      <div class="form-group">
+                          <label for="year">Years of Study</label>
+                          <input type="text" class="form-control" id="year" name="year" placeholder="Enter years">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div class="card">
+                      <div class="card-header" id="headingFive">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            About Me
+                          </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+                      <div class="card-body">
+
+                    <form action="admin/add/about_me" target="_self" method="POST">
+                      <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                      
+
                     </div>
                 </div>
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                   <div class="col-9">
-                    {% for p in projects%}
-                      <div class="row">
-                        <form action="admin/delete/{{ p.id }}" target="_self" method="POST">
-                          <div class="form-group">
-                              <label for="delete">{{ p.title }}</label>
-                              <button type="submit" id="delete" class="btn btn-danger">Delete</button>
+                      <div id="accordion">
+                        <div class="card">
+                          <div class="card-header" id="headingPro">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePro" aria-expanded="false" aria-controls="collapsePro">
+                                Projects
+                              </button>
+                            </h5>
                           </div>
-                        </form>
-                        <form action="admin/edit/{{p.id}}" method="GET">
-                          <button type="submit" class="btn btn-info">Edit</button>
-                        </form>
 
-                        <form action="admin/make_primary/{{p.id}}" method="POST">
-                          {% if p.is_primary == true %}
-                          <button type="submit" class="btn btn-info" disabled>Make primary</button>
-                          {% endif %}
-                          {% if p.is_primary == false %}
-                          <button type="submit" class="btn btn-info">Make primary</button>
-                          {% endif %}
-                        </form>
+                          <div id="collapsePro" class="collapse" aria-labelledby="headingPro" data-parent="#accordion">
+                            <div class="card-body">
+                            {% for p in projects%}
+                              <div class="row">
+                                <form action="admin/delete/project{{ p.id }}" target="_self" method="POST">
+                                  <div class="form-group">
+                                      <label for="delete">{{ p.title }}</label>
+                                      <button type="submit" id="delete" class="btn btn-danger">Delete</button>
+                                  </div>
+                                </form>
+                                <form action="admin/edit/{{p.id}}" method="GET">
+                                  <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
 
+                                <form action="admin/make_primary/{{p.id}}" method="POST">
+                                  {% if p.is_primary == true %}
+                                  <button type="submit" class="btn btn-info" disabled>Make primary</button>
+                                  {% endif %}
+                                  {% if p.is_primary == false %}
+                                  <button type="submit" class="btn btn-info">Make primary</button>
+                                  {% endif %}
+                                </form>
+
+
+                              </div>
+                            {% endfor %}
+                            </div>
+                          </div>
+                      </div>
+
+                        <div class="card">
+                          <div class="card-header" id="headingSki">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSki" aria-expanded="false" aria-controls="collapseSki">
+                                Skills
+                              </button>
+                            </h5>
+                          </div>
+
+                          <div id="collapseSki" class="collapse" aria-labelledby="headingSki" data-parent="#accordion">
+                            <div class="card-body">
+                            {% for s in skills%}
+                              <div class="row">
+                                <form action="admin/delete/skill/{{ s.id }}" target="_self" method="POST">
+                                  <div class="form-group">
+                                      <label for="delete">{{ s.name }}</label>
+                                      <button type="submit" id="delete" class="btn btn-danger">Delete</button>
+                                  </div>
+                                </form>
+                                <form action="admin/edit/{{s.id}}" method="GET">
+                                  <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                              </div>
+                            {% endfor %}
+                            </div>
+                          </div>
+                      </div>
+
+
+                      <div class="card">
+                          <div class="card-header" id="headingEd">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseEd" aria-expanded="false" aria-controls="collapseEd">
+                                Education
+                              </button>
+                            </h5>
+                          </div>
+
+                          <div id="collapseEd" class="collapse" aria-labelledby="headingEd" data-parent="#accordion">
+                            <div class="card-body">
+                            {% for e in education%}
+                              <div class="row">
+                                <form action="admin/delete/education/{{ e.id }}" target="_self" method="POST">
+                                  <div class="form-group">
+                                      <label for="delete">{{ e.major }}</label>
+                                      <button type="submit" id="delete" class="btn btn-danger">Delete</button>
+                                  </div>
+                                </form>
+                                <form action="admin/edit/{{e.id}}" method="GET">
+                                  <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                              </div>
+                            {% endfor %}
+                            </div>
+                          </div>
+                      </div>
+
+
+                        <div class="card">
+                          <div class="card-header" id="headingExp">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseExp" aria-expanded="false" aria-controls="collapseExp">
+                                Experience
+                              </button>
+                            </h5>
+                          </div>
+
+                          <div id="collapseExp" class="collapse" aria-labelledby="headingExp" data-parent="#accordion">
+                            <div class="card-body">
+                            {% for e in experience%}
+                              <div class="row">
+                                <form action="admin/delete/experience/{{ e.id }}" target="_self" method="POST">
+                                  <div class="form-group">
+                                      <label for="delete">{{ e.title }}</label>
+                                      <button type="submit" id="delete" class="btn btn-danger">Delete</button>
+                                  </div>
+                                </form>
+                                <form action="admin/edit/{{e.id}}" method="GET">
+                                  <button type="submit" class="btn btn-info">Edit</button>
+                                </form>
+                              </div>
+                            {% endfor %}
+                            </div>
+                          </div>
+                      </div>
 
                       </div>
-                    {% endfor %}
+                    
                   </div>
                 </div>
                 <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
