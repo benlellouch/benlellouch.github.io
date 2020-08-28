@@ -11,10 +11,9 @@
           <div  class="row">
             <div class="col-3">
               <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Add Project</a>
-                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Manage Projects</a>
-                <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
-                <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Add Component</a>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Manage Components</a>
+                <a class="btn btn-danger"  href="/" role="tab" aria-selected="false">Back To Home</a>
               </div>
             </div>
             <div class="col-9">
@@ -205,7 +204,7 @@
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>
                                   </div>
                                 </form>
-                                <form action="admin/edit/{{p.id}}" method="GET">
+                                <form action="admin/edit/project/{{p.id}}" method="GET">
                                   <button type="submit" class="btn btn-info">Edit</button>
                                 </form>
 
@@ -273,7 +272,7 @@
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>
                                   </div>
                                 </form>
-                                <form action="admin/edit/{{e.id}}" method="GET">
+                                <form action="admin/edit/education/{{e.id}}" method="GET">
                                   <button type="submit" class="btn btn-info">Edit</button>
                                 </form>
                               </div>
@@ -302,7 +301,7 @@
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>
                                   </div>
                                 </form>
-                                <form action="admin/edit/{{e.id}}" method="GET">
+                                <form action="admin/edit/experience/{{e.id}}" method="GET">
                                   <button type="submit" class="btn btn-info">Edit</button>
                                 </form>
                               </div>

@@ -14,7 +14,7 @@ use diesel::prelude::*;
 pub struct DbConn(PgConnection);
 
 
-#[post("/add/project", data = "<project>")]
+#[post("/project", data = "<project>")]
 pub fn add_project(conn: DbConn, project: Form<ProjectForm> , _user: AuthCont<AdministratorCookie> ) -> Result<Redirect, diesel::result::Error>
 {
     let new_project = NewProject
@@ -36,7 +36,7 @@ pub fn add_project(conn: DbConn, project: Form<ProjectForm> , _user: AuthCont<Ad
     }
 }
 
-#[post("/add/skill", data = "<skill>")]
+#[post("/skill", data = "<skill>")]
 pub fn add_skill(conn: DbConn, skill: Form<NewSkill>, _user: AuthCont<AdministratorCookie> ) -> Result<Redirect, diesel::result::Error>
 {
     let new_skill = 
@@ -58,7 +58,7 @@ pub fn add_skill(conn: DbConn, skill: Form<NewSkill>, _user: AuthCont<Administra
 }
 
 
-#[post("/add/experience", data = "<experience>")]
+#[post("/experience", data = "<experience>")]
 pub fn add_experience(conn: DbConn, experience: Form<NewExperience>, _user: AuthCont<AdministratorCookie> ) -> Result<Redirect, diesel::result::Error>
 {
     let new_experience = 
@@ -81,7 +81,7 @@ pub fn add_experience(conn: DbConn, experience: Form<NewExperience>, _user: Auth
     }
 }
 
-#[post("/add/education", data = "<education>")]
+#[post("/education", data = "<education>")]
 pub fn add_education(conn: DbConn, education: Form<NewEducation> , _user: AuthCont<AdministratorCookie> ) -> Result<Redirect, diesel::result::Error>
 {
     let new_education = 
@@ -102,7 +102,7 @@ pub fn add_education(conn: DbConn, education: Form<NewEducation> , _user: AuthCo
     }
 }
 
-#[post("/add/about_me", data = "<about_me>")]
+#[post("/about_me", data = "<about_me>")]
 pub fn add_about_me(conn: DbConn, about_me: Form<NewAboutMe>, _user: AuthCont<AdministratorCookie>) -> Result<Redirect, diesel::result::Error>
 {
     let new_about_me = 

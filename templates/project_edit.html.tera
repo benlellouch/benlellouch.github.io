@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="mx-auto" style="width: 300px;">
-                            <form action="/admin/update/{{id}}" target="_self" method="POST">
+                            <form action="/admin/update/project/{{id}}" target="_self" method="POST">
                                 <div class="form-group">
                                 <label for="title">Title</label>
                                 <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" value="{{title}}">

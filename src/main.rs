@@ -39,6 +39,7 @@ use remove_component::*;
 use edit_component::*;
 
 use diesel::prelude::*;
+use diesel::dsl::max;
 
 
 
@@ -51,8 +52,9 @@ fn index(conn: DbConn) -> Template
     let skills = skills::table.load::<Skill>(&*conn).unwrap();
     let education = education::table.load::<Education>(&*conn).unwrap();
     let experience = experience::table.load::<Experience>(&*conn).unwrap();
+    let about_me_id: Option<i32> = about_me::table.select(max(about_me::id)).first(&*conn).unwrap();
     let about_me_maybe = about_me::table
-    .limit(1)
+    .filter(about_me::id.eq(about_me_id.unwrap()))
     .load::<AboutMe>(&*conn).unwrap()
     .pop();
 
@@ -133,7 +135,11 @@ fn main() {
 
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])
-    .mount("/admin", routes![admin, add_project, add_skill, add_experience, add_education, add_about_me, delete_project, delete_education, delete_experience, delete_skill,  edit_project, update_project, make_primary, edit_skill, update_skill])
+    .mount("/admin", routes![admin, make_primary])
+    .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education, add_about_me])
+    .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
+    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience])
+    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience])
     .attach(Template::fairing())
     .attach(DbConn::fairing())
     .launch();

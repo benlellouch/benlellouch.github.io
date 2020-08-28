@@ -116,7 +116,7 @@
                             {% for e in experience %}
 
                             <div class="item">
-                                <h3 class="title">{{ e.title }}}- <span class="place"><a href="{{ e.org_link}}">{{ e.company }}</a></span> <span class="year">({{ e.year }})</span></h3>
+                                <h3 class="title">{{ e.title }}- <span class="place"><a href="{{ e.org_link}}">{{ e.company }}</a></span> <span class="year">({{ e.year }})</span></h3>
                                 <p>{{ e.description }} </p>
                             </div><!--//item-->
 
@@ -163,7 +163,13 @@
                                 {% for s in skills %}
 
                                 <div class="item">
-                                    <h3 class="level-title">{{ s.name }}<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="{{ s.origin }}"><i class="fas fa-info-circle"></i>{{ s.yoxp }}</span></h3>
+                                    <h3 class="level-title">{{ s.name }}<span class="level-label" data-toggle="tooltip" data-placement="left" data-animation="true" title="{{ s.origin }}"><i class="fas fa-info-circle"></i>
+                                    {% if s.yoxp > 1 %}
+                                    ~ {{s.yoxp}} yrs
+                                    {% else %}
+                                    ~ {{s.yoxp}} yr
+                                    {% endif %}
+                                    </span></h3>
                                     <!--<div class="level-bar">
                                         <div class="level-bar-inner" data-level="96%">
                                         </div>
