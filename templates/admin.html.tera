@@ -244,7 +244,7 @@
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>
                                   </div>
                                 </form>
-                                <form action="admin/edit/{{s.id}}" method="GET">
+                                <form action="admin/edit/skill/{{s.id}}" method="GET">
                                   <button type="submit" class="btn btn-info">Edit</button>
                                 </form>
                               </div>
