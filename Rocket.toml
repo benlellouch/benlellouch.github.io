@@ -1,2 +1,2 @@
 [global.databases]
-postgres = { url = "postgres://hcpeaikpuvyhdg:56f234d517fe42e1294935a5ec0a59f768560822faa8d00ca13019dde8335bd6@ec2-3-223-9-166.compute-1.amazonaws.com:5432/d7v4he2lqlimt5"}
+postgres = { url = "postgres://postgres:password@localhost/content"}

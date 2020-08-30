@@ -177,6 +177,29 @@
                     </div>
                   </div>
 
+                    <div class="card">
+                      <div class="card-header" id="headingSix">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                            Upload pic
+                          </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+                      <div class="card-body">
+
+                    <form action="admin/upload" target="_self" method="POST" enctype="multipart/form-data">
+                      <div class="form-group">
+                        <label for="image">Image (PNG only)</label>
+                        <input name="image" id="image" type="file" accept="image/x-png"/>
+                      </div>
+                      <button type="submit" class="btn btn-primary">upload</button>
+                    </form>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
                       
 

@@ -8,12 +8,15 @@ extern crate dotenv;
 #[macro_use]
 extern crate dotenv_codegen;
 extern crate bcrypt;
+extern crate rocket_multipart_form_data;
+extern crate image;
 
 pub mod schema;
 pub mod models;
 pub mod add_component;
 pub mod remove_component;
 pub mod edit_component;
+pub mod upload_content;
 
 
 extern crate rocket_auth_login as auth;
@@ -37,6 +40,7 @@ use schema::*;
 use add_component::*;
 use remove_component::*;
 use edit_component::*;
+use upload_content::*;
 
 use diesel::prelude::*;
 use diesel::dsl::max;
@@ -140,6 +144,7 @@ fn main() {
     .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
     .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience])
     .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience])
+    .mount("/admin/upload", routes![upload])
     .attach(Template::fairing())
     .attach(DbConn::fairing())
     .launch();
