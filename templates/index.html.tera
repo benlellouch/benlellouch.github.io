@@ -36,12 +36,12 @@
         <div class="container clearfix">
             <img class="profile-image img-fluid float-left" src="assets/images/profile.png" height="180" width="180" alt="Benjamin Lellouch" />
             <div class="profile-content float-left">
-                <h1 class="name">Benjamin Lellouch</h1>
-                <h2 class="desc">C++/JAVA Developer</h2>
+                <h1 class="name">{{ profile.first_name}} {{profile.last_name}}</h1>
+                <h2 class="desc">{{profile.title}}</h2>
                 <ul class="social list-inline">
 
-                    <li class="list-inline-item"><a href="https://www.linkedin.com/in/benjamin-lellouch/"><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Checkout my LinkedIn!"><i class="fab fa-linkedin-in"></i></a></li>
-                    <li class="list-inline-item"><a href="https://github.com/benlellouch"><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Checkout my GitHub!"><i class="fab fa-github-alt"></i></a></li>
+                    <li class="list-inline-item"><a href="{{profile.linkedin_link}}"><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Checkout my LinkedIn!"><i class="fab fa-linkedin-in"></i></a></li>
+                    <li class="list-inline-item"><a href="{{profile.github_link}}"><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Checkout my GitHub!"><i class="fab fa-github-alt"></i></a></li>
                 </ul>
             </div><!--//profile-->
             <a class="btn btn-cta-primary float-right mr-1" href="assets/resume/resume.pdf" target="_blank"><i class="fas fa-file"></i><span class="level-label" data-toggle="tooltip" data-placement="bottom" data-animation="true" title="Download my resume!"> Resume</a>
@@ -58,7 +58,7 @@
                     <div class="section-inner">
                         <h2 class="heading">About Me</h2>
                         <div class="content">
-                            <p> {{ about_me.description }}</p>
+                            <p> {{ profile.about_me }}</p>
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -147,8 +147,8 @@
                         <h2 class="heading sr-only">Basic Information</h2>
                         <div class="content">
                             <ul class="list-unstyled">
-                                <li><i class="fas fa-map-marker-alt"></i><span class="sr-only">Location:</span>Southampton, UK</li>
-                                <li><i class="fas fa-envelope"></i><span class="sr-only">Email:</span><a href="#">blellouch@gmail.com</a></li>
+                                <li><i class="fas fa-map-marker-alt"></i><span class="sr-only">Location:</span>{{profile.location}}</li>
+                                <li><i class="fas fa-envelope"></i><span class="sr-only">Email:</span><a href="#">{{profile.email}}</a></li>
                             </ul>
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -202,14 +202,12 @@
                         <h2 class="heading">Languages</h2>
                         <div class="content">
                             <ul class="list-unstyled">
+                                {% for l in languages %}
                                 <li class="item">
-                                    <span class="title"><strong>English:</strong></span>
-                                    <span class="level">Native Speaker <br class="visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </span>
+                                    <span class="title"><strong>{{l.language}}:</strong></span>
+                                    <span class="level">{{l.proficiency}} <br class="visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </span>
                                 </li><!--//item-->
-                                <li class="item">
-                                    <span class="title"><strong>French:</strong></span>
-                                    <span class="level">Native Speaker <br class="visible-sm visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></i></span>
-                                </li><!--//item-->
+                                {% endfor %}
                             </ul>
                         </div><!--//content-->
                     </div><!--//section-inner-->

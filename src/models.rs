@@ -1,6 +1,6 @@
 use diesel::{Queryable, Insertable};
 use crate::schema::{projects,
-     skills, about_me, education, experience};
+     skills,education, experience, languages, profile};
 
 #[derive(Queryable, Serialize)]
 pub struct Project
@@ -52,20 +52,6 @@ pub struct NewSkill
 
 
 #[derive(Queryable, Serialize)]
-pub struct AboutMe
-{
-    pub id: i32,
-    pub description: String
-}
-
-#[derive(Insertable, Deserialize, FromForm)]
-#[table_name="about_me"]
-pub struct NewAboutMe
-{
-    pub description: String
-}
-
-#[derive(Queryable, Serialize)]
 pub struct Experience
 {
     pub id: i32,
@@ -105,12 +91,59 @@ pub struct NewEducation
     pub year: String,
 }
 
+#[derive(Queryable, Serialize)]
+pub struct Language
+{
+    pub id: i32,
+    pub language: String,
+    pub proficiency: String
+}
+
+#[derive(Insertable, Deserialize, FromForm)]
+#[table_name="languages"]
+pub struct NewLanguage
+{
+    pub language: String,
+    pub proficiency: String
+}
+
+#[derive(Queryable, Serialize)]
+pub struct Profile
+{
+    pub id: i32,
+    pub first_name: String,
+    pub last_name: String,
+    pub title: String, 
+    pub location: String,
+    pub email: String,
+    pub about_me: String,
+    pub github_link: String,
+    pub linkedin_link: String
+}
+
+#[derive(Insertable, Deserialize, FromForm)]
+#[table_name="profile"]
+pub struct NewProfile
+{
+    pub first_name: String,
+    pub last_name: String,
+    pub title: String, 
+    pub location: String,
+    pub email: String,
+    pub about_me: String,
+    pub github_link: String,
+    pub linkedin_link: String
+}
+
+
+
 #[derive(Serialize)]
 pub struct MainTemplate
 {
     pub projects: Vec<Project>,
     pub skills: Vec<Skill>,
     pub experience: Vec<Experience>,
-    pub about_me: AboutMe,
-    pub education: Vec<Education>
+    pub languages: Vec<Language>,
+    pub education: Vec<Education>,
+    pub profile: Profile
 }

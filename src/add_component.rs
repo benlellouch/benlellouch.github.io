@@ -101,22 +101,3 @@ pub fn add_education(conn: DbConn, education: Form<NewEducation> , _user: AuthCo
         Err(p) => Err(p)
     }
 }
-
-#[post("/about_me", data = "<about_me>")]
-pub fn add_about_me(conn: DbConn, about_me: Form<NewAboutMe>, _user: AuthCont<AdministratorCookie>) -> Result<Redirect, diesel::result::Error>
-{
-    let new_about_me = 
-    NewAboutMe
-    {
-       description: about_me.description.clone()
-    };
-    let result = diesel::insert_into(about_me::table)
-    .values(&new_about_me)
-    .execute(&*conn);
-
-    match result
-    {
-        Ok(_) => Ok(Redirect::to("/")),
-        Err(p) => Err(p)
-    }
-}

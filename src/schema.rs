@@ -1,11 +1,4 @@
 table! {
-    about_me (id) {
-        id -> Int4,
-        description -> Text,
-    }
-}
-
-table! {
     education (id) {
         id -> Int4,
         major -> Text,
@@ -22,6 +15,28 @@ table! {
         year -> Text,
         description -> Text,
         org_link -> Text,
+    }
+}
+
+table! {
+    languages (id) {
+        id -> Int4,
+        language -> Text,
+        proficiency -> Text,
+    }
+}
+
+table! {
+    profile (id) {
+        id -> Int4,
+        first_name -> Text,
+        last_name -> Text,
+        title -> Text,
+        location -> Text,
+        email -> Text,
+        about_me -> Text,
+        github_link -> Text,
+        linkedin_link -> Text,
     }
 }
 
@@ -46,9 +61,10 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
-    about_me,
     education,
     experience,
+    languages,
+    profile,
     projects,
     skills,
 );

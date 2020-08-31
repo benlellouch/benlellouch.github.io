@@ -43,12 +43,20 @@ use edit_component::*;
 use upload_content::*;
 
 use diesel::prelude::*;
-use diesel::dsl::max;
-
-
 
 #[get("/")]
 fn index(conn: DbConn) -> Template
+{
+    Template::render("index", &generate_main_template(conn))
+}
+
+#[get("/")]
+fn admin(conn: DbConn, _user: AuthCont<AdministratorCookie> ) -> Template
+{
+    Template::render("admin", &generate_main_template(conn))
+}
+
+fn generate_main_template(conn: DbConn) -> MainTemplate
 {
     let mut projects = projects::table.load::<Project>(&*conn)
     .unwrap();
@@ -56,59 +64,35 @@ fn index(conn: DbConn) -> Template
     let skills = skills::table.load::<Skill>(&*conn).unwrap();
     let education = education::table.load::<Education>(&*conn).unwrap();
     let experience = experience::table.load::<Experience>(&*conn).unwrap();
-    let about_me_id: Option<i32> = about_me::table.select(max(about_me::id)).first(&*conn).unwrap();
-    let about_me_maybe = about_me::table
-    .filter(about_me::id.eq(about_me_id.unwrap()))
-    .load::<AboutMe>(&*conn).unwrap()
-    .pop();
-
-    let about_me = match about_me_maybe
-    {
-        Some(abt_me) => abt_me,
-        None => {
-            AboutMe{id: 0, description: "".to_string()}
-        }
-    };
-
-    let template = MainTemplate 
-    {
-        projects : projects,
-        skills: skills,
-        education: education,
-        experience: experience,
-        about_me: about_me
-    };
-    Template::render("index", &template)
-}
-
-#[get("/")]
-fn admin(conn: DbConn, _user: AuthCont<AdministratorCookie> ) -> Template
-{
-    let projects = projects::table.load::<Project>(&*conn).unwrap();
-    let skills = skills::table.load::<Skill>(&*conn).unwrap();
-    let education = education::table.load::<Education>(&*conn).unwrap();
-    let experience = experience::table.load::<Experience>(&*conn).unwrap();
-    let about_me_maybe = about_me::table
+    let languages = languages::table.load::<Language>(&*conn).unwrap();
+    let profile = profile::table
+    .filter(profile::id.eq(1))
     .limit(1)
-    .load::<AboutMe>(&*conn).unwrap()
-    .pop();
+    .load::<Profile>(&*conn).unwrap()
+    .pop().unwrap_or_else( || 
+    Profile
+    {
+        id: 1,
+        first_name: "John".to_string(),
+        last_name: "AppleSeed".to_string(),
+        location: "Los Angeles, CA".to_string(),
+        title: "Software Engineer".to_string(),
+        email: "john@appleseed.com".to_string(),
+        about_me: "Lorem Ipsum".to_string(),
+        github_link: "https://github.com".to_string(),
+        linkedin_link: "https://linkedin.com".to_string()
+    }
+    );
 
-    let about_me = match about_me_maybe
+    MainTemplate
     {
-        Some(abt_me) => abt_me,
-        None => {
-            AboutMe{id: 0, description: "".to_string()}
-        }
-    };
-    let template = MainTemplate 
-    {
-        projects : projects,
+        projects: projects,
         skills: skills,
         education: education,
         experience: experience,
-        about_me: about_me
-    };
-    Template::render("admin", &template)
+        languages: languages,
+        profile: profile
+    }
 }
 
 #[get("/assets/<path..>")]
@@ -140,7 +124,7 @@ fn main() {
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])
     .mount("/admin", routes![admin, make_primary])
-    .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education, add_about_me])
+    .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education])
     .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
     .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience])
     .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience])

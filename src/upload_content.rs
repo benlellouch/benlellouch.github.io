@@ -9,7 +9,7 @@ use rocket::response::{Redirect};
 use image::load_from_memory_with_format;
 use image::ImageFormat;
 
-
+//TODO could do with a refactor
 #[post("/", data = "<data>")]
 pub fn upload(content_type: &ContentType, data: Data) -> Result<Redirect, &'static str> {
     let options = MultipartFormDataOptions::with_multipart_form_data_fields(vec![
