@@ -9,9 +9,19 @@ use rocket::response::{Redirect};
 use image::load_from_memory_with_format;
 use image::ImageFormat;
 
+use s3::bucket::Bucket;
+use s3::S3Error;
+use s3::creds::Credentials;
+use s3::region::Region;
+
+use std::path::PathBuf;
+
 //TODO could do with a refactor
-#[post("/", data = "<data>")]
-pub fn upload(content_type: &ContentType, data: Data) -> Result<Redirect, &'static str> {
+#[post("/<path..>", data = "<data>")]
+pub  fn upload(content_type: &ContentType, data: Data, path: PathBuf) -> Result<Redirect, &'static str> {
+
+    let path = path.to_str().unwrap();
+
     let options = MultipartFormDataOptions::with_multipart_form_data_fields(vec![
         MultipartFormDataField::raw("image")
             .size_limit(32 * 1024 * 1024)
@@ -40,16 +50,25 @@ pub fn upload(content_type: &ContentType, data: Data) -> Result<Redirect, &'stat
         Some(mut image) => {
             let raw = image.remove(0);
 
-            let _content_type = raw.content_type;
+            let content_type = raw.content_type.unwrap();
+            println!("content type: {}", content_type);
             let file_name = raw.file_name.unwrap_or("Image".to_string());
             let data = raw.raw;
 
             match load_from_memory_with_format(&data, ImageFormat::Png)
             {
-                Ok(img) => 
+                Ok(_) => 
                 {
-                    let filepath = format!("assets/images/{}", file_name );
-                    std::fs::write(filepath, data).unwrap();
+                    let access_key = "AKIATLBBVGWPFTHNA36Z";
+                    let secret_key = "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";
+                    let bucket_name = "portfolio-lellouch";
+                    let region: Region = "eu-west-2".parse().unwrap();
+                    let credentials = Credentials::new(Some(access_key), Some(secret_key), None, None, None).unwrap();
+                    let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
+                    let (_, code) = bucket.put_object_with_content_type_blocking(format!("{}/{}", path , file_name), &data, "image/png" ).unwrap();
+                    println!("Upload: {}", code);
+                    // let filepath = format!("assets/images/{}", file_name );
+                    // std::fs::write(filepath, data).unwrap();
                 }
 
                 Err(_) => println!("Image not in correct format")
