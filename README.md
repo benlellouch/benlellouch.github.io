@@ -1,3 +1,1 @@
 # My first website
-Hello and welcome to my first personal website. This website will contain details about my hobbies, interests and work experience.
-I will also start progress about personal projects when I get any of them going (I swear I've got tons of ideas I'm just a bit lazy). I'll also post interesting articles and books that I have been reading lately ... 
