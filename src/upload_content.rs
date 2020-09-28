@@ -65,10 +65,10 @@ pub  fn upload(content_type: &ContentType, data: Data, path: PathBuf) -> Result<
                     let region: Region = "eu-west-2".parse().unwrap();
                     let credentials = Credentials::new(Some(access_key), Some(secret_key), None, None, None).unwrap();
                     let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
-                    let (_, code) = bucket.put_object_with_content_type_blocking(format!("{}/{}", path , file_name), &data, "image/png" ).unwrap();
+                    let key = format!("{}/{}", path , file_name);
+                    let (_, code) = bucket.put_object_with_content_type_blocking(&key, &data, "image/png" ).unwrap();
                     println!("Upload: {}", code);
-                    // let filepath = format!("assets/images/{}", file_name );
-                    // std::fs::write(filepath, data).unwrap();
+                    std::fs::write(key, data).unwrap();
                 }
 
                 Err(_) => println!("Image not in correct format")

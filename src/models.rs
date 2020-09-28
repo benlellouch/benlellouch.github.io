@@ -148,5 +148,4 @@ pub struct MainTemplate
     pub languages: Vec<Language>,
     pub education: Vec<Education>,
     pub profile: Profile,
-    pub aws3: String,
 }
