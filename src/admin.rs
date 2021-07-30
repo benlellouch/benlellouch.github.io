@@ -69,7 +69,7 @@ impl AuthorizeForm for AdministratorForm
         let mut file = File::open(".pswhash").unwrap();
         let _  = file.read_to_string(&mut hash);
         println!("hash :{}", hash);
-        if &self.username == dotenv!["UNAME"] && verify(&self.password, &hash).unwrap() {
+        if &self.username == &dotenv::var("UNAME").unwrap() && verify(&self.password, &hash).unwrap() {
             Ok(
                 AdministratorCookie {
                     userid: 1,

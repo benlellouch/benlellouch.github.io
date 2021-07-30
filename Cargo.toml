@@ -19,7 +19,7 @@ lazy_static = "1.2"
 bcrypt = "0.8"
 rocket-multipart-form-data = "0.9.5"
 image = "0.23.8"
-rust-s3 = "0.23.0"
+rust-s3 = "0.22.12"
 
 
 
