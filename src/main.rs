@@ -10,6 +10,7 @@ extern crate dotenv_codegen;
 extern crate bcrypt;
 extern crate rocket_multipart_form_data;
 extern crate image;
+extern crate s3;
 
 pub mod schema;
 pub mod models;
@@ -43,6 +44,7 @@ use edit_component::*;
 use upload_content::*;
 
 use diesel::prelude::*;
+
 
 #[get("/")]
 fn index(conn: DbConn) -> Template
@@ -84,6 +86,7 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
     }
     );
 
+
     MainTemplate
     {
         projects: projects,
@@ -91,7 +94,8 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
         education: education,
         experience: experience,
         languages: languages,
-        profile: profile
+        profile: profile,
+        aws3: dotenv::var("AWS3").unwrap()
     }
 }
 
@@ -121,13 +125,14 @@ fn main() {
 
     dotenv::dotenv().ok();
 
+
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])
     .mount("/admin", routes![admin, make_primary])
     .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education])
     .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
-    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience])
-    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience])
+    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience, edit_profile])
+    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience, update_profile])
     .mount("/admin/upload", routes![upload])
     .attach(Template::fairing())
     .attach(DbConn::fairing())

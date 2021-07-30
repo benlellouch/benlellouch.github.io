@@ -138,25 +138,51 @@ pub fn update_experience(conn: DbConn, post_id: i32,  experience: Form<NewExperi
 {
 
     diesel::update(experience::table.find(post_id))
-    .set(experience::title.eq(experience.title.clone()))
+    .set
+    (
+        (
+        experience::title.eq(experience.title.clone()),
+        experience::company.eq(experience.company.clone()),
+        experience::year.eq(experience.year.clone()),
+        experience::description.eq(experience.description.clone()),
+        experience::org_link.eq(experience.org_link.clone())
+        )
+    )
     .execute(&*conn)?;
-
-    diesel::update(experience::table.find(post_id))
-    .set(experience::company.eq(experience.company.clone()))
-    .execute(&*conn)?;
-
-    diesel::update(experience::table.find(post_id))
-    .set(experience::year.eq(experience.year.clone()))
-    .execute(&*conn)?;
-
-    diesel::update(experience::table.find(post_id))
-    .set(experience::description.eq(experience.description.clone()))
-    .execute(&*conn)?;
-
-    diesel::update(experience::table.find(post_id))
-    .set(experience::org_link.eq(experience.org_link.clone()))
-    .execute(&*conn)?;
-
     
+    Ok(Redirect::to("/admin"))
+}
+
+#[get("/profile/<post_id>")]
+pub fn edit_profile(conn: DbConn, post_id: i32, _user: AuthCont<AdministratorCookie>) -> Template
+{
+    let mut profile = profile::table
+                   .filter(profile::id.eq(post_id))
+                   .limit(1)
+                   .load::<Profile>(&*conn)
+                   .unwrap();
+    let project = profile.pop().unwrap();
+    Template::render("profile_edit", &project)
+}
+
+#[post("/profile/<post_id>", data= "<profile>")]
+pub fn update_profile(conn: DbConn, post_id: i32, profile: Form<NewProfile>, _user: AuthCont<AdministratorCookie>) -> Result<Redirect, diesel::result::Error>
+{
+    diesel::update(profile::table.find(post_id))
+    .set
+    (
+        (
+            profile::first_name.eq(profile.first_name.clone()),
+            profile::last_name.eq(profile.last_name.clone()),
+            profile::title.eq(profile.title.clone()),
+            profile::location.eq(profile.location.clone()),
+            profile::email.eq(profile.email.clone()),
+            profile::github_link.eq(profile.github_link.clone()),
+            profile::linkedin_link.eq(profile.linkedin_link.clone())
+        )
+    )
+    .execute(&*conn)?;
+
+
     Ok(Redirect::to("/admin"))
 }

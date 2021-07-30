@@ -145,5 +145,6 @@ pub struct MainTemplate
     pub experience: Vec<Experience>,
     pub languages: Vec<Language>,
     pub education: Vec<Education>,
-    pub profile: Profile
+    pub profile: Profile,
+    pub aws3: String,
 }
