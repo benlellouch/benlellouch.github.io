@@ -54,8 +54,8 @@ pub  fn upload(content_type: &ContentType, data: Data, path: String) -> Result<R
             {
                 Ok(_) => 
                 {
-                    let access_key = &dotenv::var("ACCESS-KEY").unwrap();
-                    let secret_key = &dotenv::var("SECRET-KEY").unwrap();
+                    let access_key = &dotenv::var("ACCESSKEY").unwrap();
+                    let secret_key = &dotenv::var("SECRETKEY").unwrap();
                     let bucket_name = "portfolio-lellouch";
                     let region: Region = "eu-west-2".parse().unwrap();
                     let credentials = Credentials::new_blocking(Some(access_key), Some(secret_key), None, None, None).unwrap();

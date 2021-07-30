@@ -47,7 +47,6 @@ CREATE TABLE profile
   id SERIAL NOT NULL PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  profile_path TEXT NOT NULL, 
   title TEXT NOT NULL,
   location TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -60,7 +59,6 @@ INSERT INTO profile
 (
   first_name,
   last_name,
-  profile_path,
   title,
   location,
   email,
@@ -72,7 +70,6 @@ VALUES
 (
   'John',
   'Appleseed',
-  'assets/images/profile/default.jpg',
   'Software Developer',
   'Los Angeles, CA',
   'john@appleseed.com',

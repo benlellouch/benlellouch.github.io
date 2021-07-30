@@ -113,7 +113,6 @@ pub struct Profile
     pub id: i32,
     pub first_name: String,
     pub last_name: String,
-    pub profile_path: String,
     pub title: String, 
     pub location: String,
     pub email: String,
@@ -128,7 +127,6 @@ pub struct NewProfile
 {
     pub first_name: String,
     pub last_name: String,
-    pub profile_path: String,
     pub title: String, 
     pub location: String,
     pub email: String,
