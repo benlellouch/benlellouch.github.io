@@ -10,6 +10,7 @@ extern crate dotenv_codegen;
 extern crate bcrypt;
 extern crate rocket_multipart_form_data;
 extern crate image;
+extern crate s3;
 
 pub mod schema;
 pub mod models;
@@ -44,6 +45,7 @@ use upload_content::*;
 
 use diesel::prelude::*;
 
+
 #[get("/")]
 fn index(conn: DbConn) -> Template
 {
@@ -75,6 +77,7 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
         id: 1,
         first_name: "John".to_string(),
         last_name: "AppleSeed".to_string(),
+        profile_path: "assets/images/profile/default.jpg".to_string(),
         location: "Los Angeles, CA".to_string(),
         title: "Software Engineer".to_string(),
         email: "john@appleseed.com".to_string(),
@@ -84,6 +87,7 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
     }
     );
 
+
     MainTemplate
     {
         projects: projects,
@@ -91,7 +95,8 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
         education: education,
         experience: experience,
         languages: languages,
-        profile: profile
+        profile: profile,
+        aws3: dotenv::var("AWS3").unwrap()
     }
 }
 
@@ -117,17 +122,54 @@ fn login() -> Option<NamedFile> {
     NamedFile::open(Path::new("assets/static/login.html")).ok()
 }
 
+fn save_file(key: String, bucket: &Bucket)
+{
+    let (data,code) = bucket.get_object_blocking(&key).unwrap();
+    match code
+    {
+        200 => {
+            std::fs::write(key, data).unwrap();
+        }
+
+        _ => ()
+    };
+
+}
+
+fn retrieve_dynamic_assets()
+{
+    let access_key = "AKIATLBBVGWPFTHNA36Z";
+    let secret_key = "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";
+    let bucket_name = "portfolio-lellouch";
+    let region: Region = "eu-west-2".parse().unwrap();
+    let credentials = Credentials::new(Some(access_key), Some(secret_key), None, None, None).unwrap();
+    let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
+    let results = bucket.list_blocking("assets/".to_string(), None).unwrap();
+    for (list, code) in results {
+        assert_eq!(200, code);
+        println!("{:?}", list.contents);
+        for item in list.contents{
+            save_file(item.key, &bucket);
+        }
+    }
+}
+
+
 fn main() {
 
     dotenv::dotenv().ok();
+    
+    retrieve_dynamic_assets();
+
+
 
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])
     .mount("/admin", routes![admin, make_primary])
     .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education])
     .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
-    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience])
-    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience])
+    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience, edit_profile])
+    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience, update_profile])
     .mount("/admin/upload", routes![upload])
     .attach(Template::fairing())
     .attach(DbConn::fairing())

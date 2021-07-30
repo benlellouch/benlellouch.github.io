@@ -189,7 +189,7 @@
                     <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
                       <div class="card-body">
 
-                    <form action="admin/upload" target="_self" method="POST" enctype="multipart/form-data">
+                    <form action="admin/upload/projects" target="_self" method="POST" enctype="multipart/form-data">
                       <div class="form-group">
                         <label for="image">Image (PNG only)</label>
                         <input name="image" id="image" type="file" accept="image/x-png"/>
@@ -332,6 +332,24 @@
                             </div>
                           </div>
                       </div>
+
+                      <div class="card">
+                        <div class="card-header" id="headingPro">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePro" aria-expanded="false" aria-controls="collapsePro">
+                              Profile
+                            </button>
+                          </h5>
+                        </div>
+
+                        <div id="collapsePro" class="collapse" aria-labelledby="headingPro" data-parent="#accordion">
+                          <div class="card-body">
+                            <form action="admin/edit/profile/{{profile.id}}" method="GET">
+                              <button type="submit" class="btn btn-info">Edit Profile</button>
+                            </form>
+                          </div>
+                        </div>
+                    </div>
 
                       </div>
                     
