@@ -31,6 +31,7 @@ table! {
         id -> Int4,
         first_name -> Text,
         last_name -> Text,
+        profile_path -> Text,
         title -> Text,
         location -> Text,
         email -> Text,
