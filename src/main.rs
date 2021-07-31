@@ -93,6 +93,9 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
     }
     );
 
+    let paths = std::fs::read_dir("assets/images/projects/").unwrap();
+    let image_paths: Vec<String> = paths.map(|p| String::from(p.unwrap().path().to_str().unwrap())).collect();
+
 
     MainTemplate
     {
@@ -102,7 +105,8 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
         experience,
         languages,
         profile,
-        aws3: dotenv::var("AWS3").unwrap()
+        image_paths
+        
     }
 }
 

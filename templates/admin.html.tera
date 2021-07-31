@@ -47,7 +47,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="img_path">Image</label>
-                                    <input type="text" class="form-control" id="img_path" name="img_path" placeholder="Image path">
+                                    <select class="form-select" id="img_path" name="img_path">
+                                      {% for img in image_paths %}
+                                      <option value="/{{img}}">{{img}}</option>
+                                      {% endfor %}
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                               </form>
@@ -154,28 +158,6 @@
                     </div>
                   </div>
 
-                    <div class="card">
-                      <div class="card-header" id="headingFive">
-                        <h5 class="mb-0">
-                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                            About Me
-                          </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
-                      <div class="card-body">
-
-                    <form action="admin/add/about_me" target="_self" method="POST">
-                      <div class="form-group">
-                        <label for="description">Description</label>
-                        <input type="text" class="form-control" id="description" name="description" placeholder="Description">
-                      </div>
-                      <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                      </div>
-                    </div>
-                  </div>
 
                     <div class="card">
                       <div class="card-header" id="headingSix">
@@ -186,15 +168,39 @@
                         </h5>
                     </div>
 
+                    <script >
+
+                      window.addEventListener("DOMContentLoaded", function() 
+                      {
+                        document.getElementById("upload-button").addEventListener("click", function()
+                        {
+                          var form = document.getElementById("upload-form")
+                          var select = document.getElementById("upload-select");
+                          var option = select.options[select.selectedIndex];
+                          form.action = option.value;
+                          form.submit();
+                        }
+                    
+                        )
+                      }
+                      )
+                   
+                    </script>
+
                     <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
                       <div class="card-body">
 
-                    <form action="admin/upload/profile" target="_self" method="POST" enctype="multipart/form-data">
+                    <select class="form-select" id="upload-select">
+                      <option value="admin/upload/profile">Profile</option>
+                      <option value="admin/upload/projects">Project</option>
+                    </select>
+
+                    <form action="" target="_self" method="POST" enctype="multipart/form-data" id="upload-form">
                       <div class="form-group">
                         <label for="image">Image (PNG only)</label>
                         <input name="image" id="image" type="file" accept="image/x-png"/>
                       </div>
-                      <button type="submit" class="btn btn-primary">upload</button>
+                      <button id="upload-button" class="btn btn-primary">upload</button>
                     </form>
                       </div>
                     </div>
@@ -221,7 +227,7 @@
                             <div class="card-body">
                             {% for p in projects%}
                               <div class="row">
-                                <form action="admin/delete/project{{ p.id }}" target="_self" method="POST">
+                                <form action="admin/delete/project/{{ p.id }}" target="_self" method="POST">
                                   <div class="form-group">
                                       <label for="delete">{{ p.title }}</label>
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>

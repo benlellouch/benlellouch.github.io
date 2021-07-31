@@ -148,7 +148,7 @@ pub struct MainTemplate
     pub languages: Vec<Language>,
     pub education: Vec<Education>,
     pub profile: Profile,
-    pub aws3: String,
+    pub image_paths: Vec<String>
 }
 
 #[derive(Serialize)]
