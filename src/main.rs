@@ -141,7 +141,7 @@ fn save_file(key: String, bucket: &Bucket)
             match std::fs::write(&key, data)
             {
                 Ok(_) => (),
-                Err(_) => panic!("Was not able to save file: {}", key),
+                Err(_) => println!("WARNING: WAS NOT ABLE TO SAVE FILE {}", key)
             }
         }
 
