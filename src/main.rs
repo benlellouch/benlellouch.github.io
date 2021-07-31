@@ -35,7 +35,8 @@ use rocket::response::{NamedFile, Redirect, Flash};
 use rocket::http::{Cookies};
 use rocket::request::Form;
 
-
+use std::fs::File;
+use std::io::prelude::*;
 use std::path::{PathBuf, Path};
 
 mod admin;
@@ -174,16 +175,25 @@ fn main() {
 
     retrieve_dynamic_assets();
 
-    
-    rocket::ignite()
-    .mount("/", routes![index, get_resource, logged_in, login, process_login])
-    .mount("/admin", routes![admin, make_primary])
-    .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education])
-    .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
-    .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience, edit_profile])
-    .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience, update_profile])
-    .mount("/admin/upload", routes![upload])
-    .attach(Template::fairing())
-    .attach(DbConn::fairing())
-    .launch();
+    let database = format!("[global.databases]\n
+    postgres = {{ url = \"{}\"}}", dotenv::var("DATABASE_URL").unwrap()).into_bytes();
+
+    let mut dbconfig = File::create("Rocket.toml").unwrap();
+    match dbconfig.write_all(&database)
+    {
+        Ok(_) => {
+            rocket::ignite()
+            .mount("/", routes![index, get_resource, logged_in, login, process_login])
+            .mount("/admin", routes![admin, make_primary])
+            .mount("/admin/add", routes![add_project, add_skill, add_experience, add_education])
+            .mount("/admin/delete", routes![delete_project, delete_education, delete_experience, delete_skill])
+            .mount("/admin/edit", routes![edit_project, edit_skill, edit_education, edit_experience, edit_profile])
+            .mount("/admin/update", routes![update_education, update_project, update_skill, update_experience, update_profile])
+            .mount("/admin/upload", routes![upload])
+            .attach(Template::fairing())
+            .attach(DbConn::fairing())
+            .launch();
+        }
+        Err(error) => panic!("{:?}",error)
+    }
 }
