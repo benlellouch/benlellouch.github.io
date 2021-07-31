@@ -194,15 +194,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aws-region"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a504b2e11cc21b96f833fccf6f3fa5f29b6c25ad60ba8b4e6ae3b057944fb546"
-dependencies = [
- "simpl",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
