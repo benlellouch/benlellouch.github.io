@@ -28,7 +28,7 @@ use s3::region::Region;
 extern crate rocket_auth_login as auth;
 use auth::authorization::*;
 
-use dotenv::dotenv;
+
 use rocket_contrib::templates::Template;
 
 use rocket::response::{NamedFile, Redirect, Flash};  

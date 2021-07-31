@@ -202,12 +202,14 @@
                         <h2 class="heading">Languages</h2>
                         <div class="content">
                             <ul class="list-unstyled">
-                                {% for l in languages %}
                                 <li class="item">
-                                    <span class="title"><strong>{{l.language}}:</strong></span>
-                                    <span class="level">{{l.proficiency}} <br class="visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </span>
+                                    <span class="title"><strong>English:</strong></span>
+                                    <span class="level">Native Speaker <br class="visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </span>
                                 </li><!--//item-->
-                                {% endfor %}
+                                <li class="item">
+                                    <span class="title"><strong>French:</strong></span>
+                                    <span class="level">Native Speaker <br class="visible-sm visible-xs"/><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></i></span>
+                                </li><!--//item-->
                             </ul>
                         </div><!--//content-->
                     </div><!--//section-inner-->
