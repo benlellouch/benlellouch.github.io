@@ -32,6 +32,7 @@ table! {
         first_name -> Text,
         last_name -> Text,
         title -> Text,
+        profile_picture_path -> Text,
         location -> Text,
         email -> Text,
         about_me -> Text,

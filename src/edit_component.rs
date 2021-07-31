@@ -1,3 +1,5 @@
+use std::clone;
+
 use crate::admin::*;
 use crate::models::*;
 use crate::schema::*;
@@ -161,8 +163,19 @@ pub fn edit_profile(conn: DbConn, post_id: i32, _user: AuthCont<AdministratorCoo
                    .limit(1)
                    .load::<Profile>(&*conn)
                    .unwrap();
-    let project = profile.pop().unwrap();
-    Template::render("profile_edit", &project)
+    let profile = profile.pop().unwrap();
+
+    let paths = std::fs::read_dir("assets/images/profile/").unwrap();
+    let image_paths: Vec<String> = paths.map(|p| String::from(p.unwrap().path().to_str().unwrap())).collect();
+
+    let profile_template = EditProfileTemplate
+    {
+        profile,
+        image_paths
+    };
+
+
+    Template::render("profile_edit", &profile_template)
 }
 
 #[post("/profile/<post_id>", data= "<profile>")]
@@ -175,6 +188,8 @@ pub fn update_profile(conn: DbConn, post_id: i32, profile: Form<NewProfile>, _us
             profile::first_name.eq(profile.first_name.clone()),
             profile::last_name.eq(profile.last_name.clone()),
             profile::title.eq(profile.title.clone()),
+            profile::profile_picture_path.eq(profile.profile_picture_path.clone()),
+            profile::about_me.eq(profile.about_me.clone()),
             profile::location.eq(profile.location.clone()),
             profile::email.eq(profile.email.clone()),
             profile::github_link.eq(profile.github_link.clone()),

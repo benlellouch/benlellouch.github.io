@@ -56,14 +56,14 @@ pub  fn upload(content_type: &ContentType, data: Data, path: String) -> Result<R
                 {
                     let access_key = &dotenv::var("ACCESSKEY").unwrap();
                     let secret_key = &dotenv::var("SECRETKEY").unwrap();
-                    let bucket_name = "portfolio-lellouch";
+                    let bucket_name = &dotenv::var("BUCKET").unwrap();
                     let region: Region = "eu-west-2".parse().unwrap();
                     let credentials = Credentials::new_blocking(Some(access_key), Some(secret_key), None, None, None).unwrap();
                     let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
-                    let (_, code) = bucket.put_object_blocking(format!("{}/{}", path, file_name), &data, content_type.type_().as_str() ).unwrap();
+                    let (_, code) = bucket.put_object_blocking(format!("assets/images/{}/{}", path, file_name), &data, content_type.type_().as_str() ).unwrap();
                     println!("Upload: {}", code);
-                    // let filepath = format!("assets/images/{}", file_name );
-                    // std::fs::write(filepath, data).unwrap();
+                    let filepath = format!("assets/images/{}/{}",path, file_name );
+                    std::fs::write(filepath, data).unwrap();
                 }
 
                 Err(_) => println!("Image not in correct format")

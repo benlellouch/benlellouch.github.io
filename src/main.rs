@@ -19,10 +19,16 @@ pub mod remove_component;
 pub mod edit_component;
 pub mod upload_content;
 
+use s3::bucket::Bucket;
+// use s3::S3Error;
+use s3::creds::Credentials;
+use s3::region::Region;
+
 
 extern crate rocket_auth_login as auth;
 use auth::authorization::*;
 
+use dotenv::dotenv;
 use rocket_contrib::templates::Template;
 
 use rocket::response::{NamedFile, Redirect, Flash};  
@@ -79,6 +85,7 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
         last_name: "AppleSeed".to_string(),
         location: "Los Angeles, CA".to_string(),
         title: "Software Engineer".to_string(),
+        profile_picture_path: "path/to/picture".to_string(),
         email: "john@appleseed.com".to_string(),
         about_me: "Lorem Ipsum".to_string(),
         github_link: "https://github.com".to_string(),
@@ -89,12 +96,12 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
 
     MainTemplate
     {
-        projects: projects,
-        skills: skills,
-        education: education,
-        experience: experience,
-        languages: languages,
-        profile: profile,
+        projects,
+        skills,
+        education,
+        experience,
+        languages,
+        profile,
         aws3: dotenv::var("AWS3").unwrap()
     }
 }
@@ -121,9 +128,48 @@ fn login() -> Option<NamedFile> {
     NamedFile::open(Path::new("assets/static/login.html")).ok()
 }
 
+fn save_file(key: String, bucket: &Bucket)
+{
+    let (data,code) = bucket.get_object_blocking(&key).unwrap();
+    match code
+    {
+        200 => {
+            match std::fs::write(&key, data)
+            {
+                Ok(_) => (),
+                Err(_) => panic!("Was not able to save file: {}", key),
+            }
+        }
+
+        _ => ()
+    };
+
+}
+
+fn retrieve_dynamic_assets()
+{
+    let access_key = &dotenv::var("ACCESSKEY").unwrap();
+    let secret_key = &dotenv::var("SECRETKEY").unwrap();
+    let bucket_name = &dotenv::var("BUCKET").unwrap();
+    let region: Region = "eu-west-2".parse().unwrap();
+    let credentials = Credentials::new_blocking(Some(access_key), Some(secret_key), None, None, None).unwrap();
+    let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
+    let results = bucket.list_blocking("".to_string(), None).unwrap();
+    for (list, code) in results {
+        assert_eq!(200, code);
+        println!("{:?}", list.contents);
+        for item in list.contents{
+            save_file(item.key, &bucket);
+        }
+    }
+}
+
 fn main() {
 
     dotenv::dotenv().ok();
+
+    retrieve_dynamic_assets();
+
     
     rocket::ignite()
     .mount("/", routes![index, get_resource, logged_in, login, process_login])

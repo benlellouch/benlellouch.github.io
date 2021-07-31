@@ -114,6 +114,7 @@ pub struct Profile
     pub first_name: String,
     pub last_name: String,
     pub title: String, 
+    pub profile_picture_path: String,
     pub location: String,
     pub email: String,
     pub about_me: String,
@@ -128,6 +129,7 @@ pub struct NewProfile
     pub first_name: String,
     pub last_name: String,
     pub title: String, 
+    pub profile_picture_path: String,
     pub location: String,
     pub email: String,
     pub about_me: String,
@@ -147,4 +149,11 @@ pub struct MainTemplate
     pub education: Vec<Education>,
     pub profile: Profile,
     pub aws3: String,
+}
+
+#[derive(Serialize)]
+pub struct EditProfileTemplate
+{
+    pub profile: Profile,
+    pub image_paths: Vec<String>
 }
