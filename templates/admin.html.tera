@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="form-group">
                                   <label for="description">Description</label>
-                                  <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                                  <textarea type="text" class="form-control" id="description" name="description" placeholder="Enter description"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="link">Link</label>
@@ -116,7 +116,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">
+                            <textarea type="text" class="form-control" id="description" name="description" placeholder="Enter description"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="org_link">Organisation Link</label>
@@ -214,6 +214,8 @@
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                   <div class="col-9">
                       <div id="accordion">
+
+                        {% if projects | length > 0 %}
                         <div class="card">
                           <div class="card-header" id="headingPro">
                             <h5 class="mb-0">
@@ -252,7 +254,9 @@
                             </div>
                           </div>
                       </div>
+                      {% endif %}
 
+                      {% if skills | length > 0 %}
                         <div class="card">
                           <div class="card-header" id="headingSki">
                             <h5 class="mb-0">
@@ -280,8 +284,9 @@
                             </div>
                           </div>
                       </div>
+                      {% endif %}
 
-
+                      {% if education | length > 0 %}
                       <div class="card">
                           <div class="card-header" id="headingEd">
                             <h5 class="mb-0">
@@ -309,8 +314,9 @@
                             </div>
                           </div>
                       </div>
+                      {% endif %}
 
-
+                      {% if experience | length > 0 %}
                         <div class="card">
                           <div class="card-header" id="headingExp">
                             <h5 class="mb-0">
@@ -326,7 +332,7 @@
                               <div class="row">
                                 <form action="admin/delete/experience/{{ e.id }}" target="_self" method="POST">
                                   <div class="form-group">
-                                      <label for="delete">{{ e.title }}</label>
+                                      <label for="delete">{{ e.title }} - {{ e.company }} - {{ e.year }}</label>
                                       <button type="submit" id="delete" class="btn btn-danger">Delete</button>
                                   </div>
                                 </form>
@@ -338,17 +344,18 @@
                             </div>
                           </div>
                       </div>
+                      {% endif %}
 
                       <div class="card">
-                        <div class="card-header" id="headingPro">
+                        <div class="card-header" id="headingProf">
                           <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePro" aria-expanded="false" aria-controls="collapsePro">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseProf" aria-expanded="false" aria-controls="collapseProf">
                               Profile
                             </button>
                           </h5>
                         </div>
 
-                        <div id="collapsePro" class="collapse" aria-labelledby="headingPro" data-parent="#accordion">
+                        <div id="collapseProf" class="collapse" aria-labelledby="headingProf" data-parent="#accordion">
                           <div class="card-body">
                             <form action="admin/edit/profile/{{profile.id}}" method="GET">
                               <button type="submit" class="btn btn-info">Edit Profile</button>
