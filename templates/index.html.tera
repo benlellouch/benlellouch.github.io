@@ -58,7 +58,7 @@
                     <div class="section-inner">
                         <h2 class="heading">About Me</h2>
                         <div class="content">
-                            <p> {{ profile.about_me }}</p>
+                            <pre>{{ profile.about_me }}</pre>
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
