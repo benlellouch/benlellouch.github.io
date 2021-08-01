@@ -58,7 +58,7 @@
                     <div class="section-inner">
                         <h2 class="heading">About Me</h2>
                         <div class="content">
-                            <p>{{ profile.about_me }}</p>
+                            <p style="white-space : pre-wrap">{{ profile.about_me }}</p>
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
@@ -80,7 +80,7 @@
                                      <div class="ribbon">
 
                                  <div class="desc text-left">
-                                   <p>{{ p.description}}</p>
+                                   <p style="white-space : pre-wrap">{{ p.description}}</p>
                                  </div><!--//desc-->
                                  <!-- <a class="btn btn-cta-secondary" href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank"><i class="fas fa-thumbs-up"></i> Contribute to the project!</a> -->
                              </div><!--//item-->
@@ -117,7 +117,7 @@
 
                             <div class="item">
                                 <h3 class="title">{{ e.title }}- <span class="place"><a href="{{ e.org_link}}">{{ e.company }}</a></span> <span class="year">({{ e.year }})</span></h3>
-                                <p>{{ e.description }} </p>
+                                <p style="white-space : pre-wrap">{{ e.description }} </p>
                             </div><!--//item-->
 
                             {% endfor %}
