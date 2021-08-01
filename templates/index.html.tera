@@ -82,7 +82,6 @@
                                  <div class="desc text-left">
                                    <p style="white-space : pre-wrap">{{ p.description}}</p>
                                  </div><!--//desc-->
-                                 <!-- <a class="btn btn-cta-secondary" href="https://github.com/benlellouch/Open-HoneyBadger-Project" target="_blank"><i class="fas fa-thumbs-up"></i> Contribute to the project!</a> -->
                              </div><!--//item-->
 
                              <hr class="divider" />

@@ -63,10 +63,8 @@ impl AuthorizeForm for AdministratorForm
     fn authenticate(&self) -> Result<Self::CookieType, AuthFail>
     {
         // println!("Authenticating {} with password: {}", &self.username, &self.password);
-        let newhash = bcrypt::hash(&self.password, bcrypt::DEFAULT_COST).unwrap();
-        println!("newhash {}", newhash);
         let hash = dotenv::var("PSWHASH").unwrap();
-        println!("hash :{}", hash);
+        // println!("hash :{}", hash);
         if &self.username == &dotenv::var("UNAME").unwrap() && verify(&self.password, &hash).unwrap() {
             Ok(
                 AdministratorCookie {
