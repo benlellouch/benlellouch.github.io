@@ -72,7 +72,9 @@ fn generate_main_template(conn: DbConn) -> MainTemplate
     projects.sort_by(|a, b| b.is_primary.cmp(&a.is_primary));
     let skills = skills::table.load::<Skill>(&*conn).unwrap();
     let education = education::table.load::<Education>(&*conn).unwrap();
-    let experience = experience::table.load::<Experience>(&*conn).unwrap();
+    let mut experience = experience::table.load::<Experience>(&*conn).unwrap();
+    experience.sort_by_key(|k| k.id);
+    experience.reverse();
     let languages = languages::table.load::<Language>(&*conn).unwrap();
     let profile = profile::table
     .filter(profile::id.eq(1))
