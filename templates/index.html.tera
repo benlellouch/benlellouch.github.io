@@ -95,7 +95,7 @@
                                  </a>
                                  <div class="desc col-md-8 col-12">
                                      <h3 class="title"><a href="{{ p.link }}" target="_blank">{{p.title}}</a></h3>
-                                     <p class="mb-2">{{ p.description }} </p>
+                                     <p class="mb-2" style="white-space : pre-wrap">{{ p.description }} </p>
                                  </div><!--//desc-->
                              </div><!--//item-->
 
