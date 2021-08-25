@@ -58,9 +58,9 @@ pub  fn upload(content_type: &ContentType, data: Data, path: String) -> Result<R
                     let secret_key = &dotenv::var("SECRETKEY").unwrap();
                     let bucket_name = &dotenv::var("BUCKET").unwrap();
                     let region: Region = "eu-west-2".parse().unwrap();
-                    let credentials = Credentials::new_blocking(Some(access_key), Some(secret_key), None, None, None).unwrap();
+                    let credentials = Credentials::new(Some(access_key), Some(secret_key), None, None, None).unwrap();
                     let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
-                    let (_, code) = bucket.put_object_blocking(format!("assets/images/{}/{}", path, file_name), &data, content_type.type_().as_str() ).unwrap();
+                    let (_, code) = bucket.put_object_blocking(format!("assets/images/{}/{}", path, file_name), &data).unwrap();
                     println!("Upload: {}", code);
                     let filepath = format!("assets/images/{}/{}",path, file_name );
                     std::fs::write(filepath, data).unwrap();
