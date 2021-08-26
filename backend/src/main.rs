@@ -159,7 +159,7 @@ fn retrieve_dynamic_assets()
     let secret_key = &dotenv::var("SECRETKEY").unwrap();
     let bucket_name = &dotenv::var("BUCKET").unwrap();
     let region: Region = "eu-west-2".parse().unwrap();
-    let credentials = Credentials::new_blocking(Some(access_key), Some(secret_key), None, None, None).unwrap();
+    let credentials = Credentials::new(Some(access_key), Some(secret_key), None, None, None).unwrap();
     let bucket = Bucket::new(bucket_name, region, credentials).unwrap();
     let results = bucket.list_blocking("".to_string(), None).unwrap();
     for (list, code) in results {
