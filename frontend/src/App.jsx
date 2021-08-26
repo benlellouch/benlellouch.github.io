@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Projects from './components/Projects';
 import Experiences from './components/Experiences';
 import Button from './components/Button';
@@ -9,44 +9,32 @@ import { ProjectForm } from './components/ProjectForm';
 
 function App() {
 
-  const [projects, setprojects] = useState([
-    {
-      id:1,
-      title:"This website",
-      description:"This is my first website built with React",
-      link:"https://github.com/benlellouch/benlellouch.github.io"
-    },
-    {
-      id:2,
-      title:"Cool project",
-      description:"This is a cool project",
-      link:"https://github.com/benlellouch/benlellouch.github.io"
-    },
-    
-  ])
-
-  const [experiences, setexperiences] = useState([
-    {
-      id:1,
-      title:"Software Engineer",
-      company:"J.P. Morgan",
-      year: "jun 2021 - aug 2021",
-      description:"This is my first website built with React",
-      org_link:"https://github.com/benlellouch/benlellouch.github.io"
-    },
-    {
-      id:2,
-      title:"Software Engineer",
-      year: "jun 2020 - aug 2020",
-      company:"Raymarine",
-      description:"Another Internship my G",
-      org_link:"https://github.com/benlellouch/benlellouch.github.io"
-    },
-  ])
+  const [projects, setprojects] = useState([])
+  const [experiences, setexperiences] = useState([])
 
   const [showExperienceForm, setShowExperienceForm] = useState(false)
   const [showProjectForm, setShowProjectForm] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
+
+
+
+  useEffect( () => {
+    const getProjects = async () => {
+      const projectsFromServer = await fetchProjects()
+      setprojects(projectsFromServer)
+    }
+
+    getProjects()
+  }, [])
+
+
+  const fetchProjects = async () => {
+    const res = await fetch('http://localhost:8000/projects')
+    const data = await res.json()
+    console.log(data)
+
+    return data
+  }
 
 
   const deleteExperience = (id) => 
