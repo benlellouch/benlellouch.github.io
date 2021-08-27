@@ -7,6 +7,7 @@ import ModalForm from './components/ModalForm';
 import { ExperienceForm } from './components/ExperienceForm';
 import { ProjectForm } from './components/ProjectForm';
 
+
 function App() {
 
   const [projects, setprojects] = useState([])
@@ -24,41 +25,88 @@ function App() {
       setprojects(projectsFromServer)
     }
 
+    const getExperiences = async () => {
+      const experiencesFromServer = await fetchExperiences()
+      setexperiences(experiencesFromServer)
+    }
+
     getProjects()
+    getExperiences()
   }, [])
 
 
   const fetchProjects = async () => {
-    const res = await fetch('http://localhost:8000/projects')
+    const res = await fetch('http://localhost:8000/projects', {
+      credentials: "include"
+    }
+    )
     const data = await res.json()
-    console.log(data)
 
     return data
   }
 
 
-  const deleteExperience = (id) => 
-  {
-    setexperiences(experiences.filter((exp) => exp.id !== id))
+  const fetchExperiences = async () => {
+    const res = await fetch('http://localhost:8000/experiences')
+    const data = await res.json()
+
+    return data
   }
 
-  const addExperience = (experience) => 
+
+
+  const deleteExperience = async (id) => 
   {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newExperience = {id, ...experience}
-    setexperiences([...experiences, newExperience])
+    const res = await fetch(`http://localhost:8000/experiences/${id}`, {
+      method: 'DELETE',
+    })
+
+    res.status === 200
+    ? setexperiences(experiences.filter((exp) => exp.id !== id))
+    : alert("Failed to delete experience")
   }
 
-  const deleteProject = (id) => 
+  const addExperience = async (experience) => 
   {
-    setprojects(projects.filter((exp) => exp.id !== id))
+    const res = await fetch('http://localhost:8000/experiences', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(experience),
+    })
+
+    const data = await res.json()
+
+    setexperiences([...experiences, data])
   }
 
-  const addProject = (project) => 
+  const deleteProject = async (id) => 
   {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newProject = {id, ...project}
-    setprojects([...projects, newProject])
+    const res = await fetch(`http://localhost:8000/projects/${id}`, {
+      method: 'DELETE',
+
+    })
+
+    res.status === 200
+    ? setprojects(projects.filter((exp) => exp.id !== id))
+    : alert("Failed to delete project")
+  }
+
+  const addProject = async (project) => 
+  {
+    const res = await fetch('http://localhost:8000/projects', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(project),
+    })
+
+    const data = await res.json()
+
+    setprojects([...projects, data])
   }
 
   const toggleExperienceForm = () => {
@@ -82,7 +130,7 @@ function App() {
       {/* Placeholder Image */}
       <img src='https://www.benjaminlellouch.com/assets/images/profile/profile.png' alt="a broke boy" height="180" width="180" />
       <h1>Benjamin Lellouch</h1>
-      <Button color={"green"} text={"Login"} onClick={toggleLoggedIn}/>
+      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logout" : "Login"} onClick={toggleLoggedIn}/>
       <h2>About me</h2>
       <p>This an about me.</p>
       <p>
