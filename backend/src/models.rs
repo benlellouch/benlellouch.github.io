@@ -37,3 +37,9 @@ pub struct NewExperience {
     pub year: String,
     pub org_link: String
 }
+
+#[derive(Deserialize)]
+pub struct Login {
+    pub username: String,
+    pub password: String
+}
