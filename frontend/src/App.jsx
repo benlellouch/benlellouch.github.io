@@ -6,6 +6,7 @@ import Button from './components/Button';
 import ModalForm from './components/ModalForm';
 import { ExperienceForm } from './components/ExperienceForm';
 import { ProjectForm } from './components/ProjectForm';
+import { LoginForm } from './components/LoginForm';
 
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
 
   const [showExperienceForm, setShowExperienceForm] = useState(false)
   const [showProjectForm, setShowProjectForm] = useState(false)
+  const [showLoginForm, setShowLoginForm] = useState(false)
+
   const [loggedIn, setLoggedIn] = useState(false)
 
 
@@ -30,8 +33,19 @@ function App() {
       setexperiences(experiencesFromServer)
     }
 
+    const attemptLogin = async () => {
+      const success = await alreadyLoggedIn()
+      if (success === true)
+      {
+        setLoggedIn(true)
+      }
+    }
+
     getProjects()
     getExperiences()
+    attemptLogin()
+
+  
   }, [])
 
 
@@ -41,6 +55,7 @@ function App() {
     }
     )
     const data = await res.json()
+
 
     return data
   }
@@ -59,6 +74,7 @@ function App() {
   {
     const res = await fetch(`http://localhost:8000/experiences/${id}`, {
       method: 'DELETE',
+      credentials: 'include'
     })
 
     res.status === 200
@@ -68,6 +84,7 @@ function App() {
 
   const addExperience = async (experience) => 
   {
+
     const res = await fetch('http://localhost:8000/experiences', {
       method: 'POST',
       credentials: 'include',
@@ -77,16 +94,19 @@ function App() {
       body: JSON.stringify(experience),
     })
 
-    const data = await res.json()
-
-    setexperiences([...experiences, data])
+    if (res.status === 200) {
+      const data = await res.json()
+      setexperiences([...experiences, data])
+    } else {
+      alert('Failed to add Experience.')
+    }
   }
 
   const deleteProject = async (id) => 
   {
     const res = await fetch(`http://localhost:8000/projects/${id}`, {
       method: 'DELETE',
-
+      credentials : 'include'
     })
 
     res.status === 200
@@ -96,17 +116,54 @@ function App() {
 
   const addProject = async (project) => 
   {
+
     const res = await fetch('http://localhost:8000/projects', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(project),
     })
 
+    if (res.status === 200) {
+      const data = await res.json()
+      setprojects([...projects, data])
+    } else {
+      alert('Failed to add Project.')
+    }
+    
+  }
+
+  const login = async (form) => {
+
+    const res = await fetch('http://localhost:8000/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(form),
+    })
+
     const data = await res.json()
 
-    setprojects([...projects, data])
+    if (data.success) {
+      setLoggedIn(true)
+      setShowLoginForm(false)
+    }
+  
+  }
+
+  const logout = async () => {
+    const res = await fetch('http://localhost:8000/logout',{
+      method: 'POST',
+      credentials: 'include'
+    })
+
+    res.status === 200
+    ? setLoggedIn(false)
+    : alert('Failed to logout')
   }
 
   const toggleExperienceForm = () => {
@@ -117,10 +174,24 @@ function App() {
     setShowProjectForm(!showProjectForm)
   }
 
-  const toggleLoggedIn = () => {
-    setLoggedIn(!loggedIn)
+  const toggleLoginForm = async () => {
+    if ((await alreadyLoggedIn()) === true){
+      console.log("I get here")
+      setLoggedIn(true)
+    } else
+    {
+      setShowLoginForm(true)
+    } 
   }
 
+
+  const alreadyLoggedIn = async () => {
+    const res = await fetch('http://localhost:8000/login', {
+      credentials : 'include',
+    })
+    const data = await res.json()
+    return data.success 
+  }
 
 
 
@@ -130,12 +201,8 @@ function App() {
       {/* Placeholder Image */}
       <img src='https://www.benjaminlellouch.com/assets/images/profile/profile.png' alt="a broke boy" height="180" width="180" />
       <h1>Benjamin Lellouch</h1>
-      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logout" : "Login"} onClick={toggleLoggedIn}/>
-      <h2>About me</h2>
-      <p>This an about me.</p>
-      <p>
-        This is a test to see if it gets bigger and stuff but I should probably change the css anyways.
-      </p>
+      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logout" : "Login"} onClick={loggedIn ? logout : toggleLoginForm }/>
+ 
 
       {/* Experience Form pop up */}
       <div>{showExperienceForm ? <ModalForm form={
@@ -143,8 +210,15 @@ function App() {
       }/> : null}
       </div>
 
+      {/* Project Form pop up */}
       <div>{showProjectForm ? <ModalForm form={
         <ProjectForm onClose={toggleProjectForm} onAdd={addProject}/>
+      }/> : null}
+      </div>
+
+      {/* Login Form pop up */}
+      <div>{showLoginForm ? <ModalForm form={
+        <LoginForm onClose={() => setShowLoginForm(false)} onAdd={login}/>
       }/> : null}
       </div>
 
