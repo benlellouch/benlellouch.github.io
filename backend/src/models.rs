@@ -22,8 +22,8 @@ pub struct NewProject {
 pub struct Experience {
     pub id: i32,
     pub title: String,
-    pub description: String,
     pub company: String,
+    pub description: String,
     pub year: String,
     pub org_link: String
 }
@@ -32,8 +32,8 @@ pub struct Experience {
 #[table_name="experiences"]
 pub struct NewExperience {
     pub title: String,
-    pub description: String,
     pub company: String,
+    pub description: String,
     pub year: String,
     pub org_link: String
 }
@@ -42,4 +42,10 @@ pub struct NewExperience {
 pub struct Login {
     pub username: String,
     pub password: String
+}
+
+#[derive(Serialize)]
+
+pub struct LoginOutcome {
+    pub success: bool,
 }

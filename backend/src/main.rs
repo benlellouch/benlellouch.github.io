@@ -9,12 +9,15 @@ mod schema;
 mod models;
 mod database;
 mod cors;
+mod admin;
 
 use crate::models::*;
 use crate::schema::*;
+use crate::admin::Admin;
 use crate::database::DbConn;
 use crate::cors::CORS;
-use rocket::http::{Cookie, CookieJar};
+use rocket::http::{Cookie, CookieJar, Status};
+use rocket::response::Redirect;
 
 
 #[get("/projects")]
@@ -39,7 +42,7 @@ async fn get_experiences(conn: DbConn) -> Option<Json<Vec<Experience>>> {
 }
 
 #[post("/projects", data="<project>")]
-async fn add_project(conn: DbConn, project: Json<NewProject>) -> Option<Json<Project>> {
+async fn add_project(conn: DbConn, project: Json<NewProject>, _admin: Admin) -> Option<Json<Project>> {
 
         let new_project: Option<Project> = conn.run( move |conn| {
             diesel::insert_into(projects::table)
@@ -56,7 +59,7 @@ async fn add_project(conn: DbConn, project: Json<NewProject>) -> Option<Json<Pro
 }
 
 #[post("/experiences", data="<experience>")]
-async fn add_experience(conn: DbConn, experience: Json<NewExperience>) -> Option<Json<Experience>> {
+async fn add_experience(conn: DbConn, experience: Json<NewExperience>, _admin: Admin) -> Option<Json<Experience>> {
 
 
         let new_experience: Option<Experience> = conn.run( move |conn| {
@@ -74,7 +77,7 @@ async fn add_experience(conn: DbConn, experience: Json<NewExperience>) -> Option
 }
 
 #[delete("/experiences/<id>")]
-async fn remove_experience(conn: DbConn, id: i32) -> Option<()>
+async fn remove_experience(conn: DbConn, id: i32, _admin: Admin) -> Option<()>
 {
     let result = conn.run( move |conn| {
         diesel::delete(experiences::table.filter(experiences::id.eq(id)))
@@ -88,7 +91,7 @@ async fn remove_experience(conn: DbConn, id: i32) -> Option<()>
 }
 
 #[delete("/projects/<id>")]
-async fn remove_project(conn: DbConn, id: i32) -> Option<()>
+async fn remove_project(conn: DbConn, id: i32, _admin: Admin) -> Option<()>
 {
     let result = conn.run( move |conn| {
         diesel::delete(projects::table.filter(projects::id.eq(id)))
@@ -102,34 +105,80 @@ async fn remove_project(conn: DbConn, id: i32) -> Option<()>
 }
 
 #[post("/login", data = "<login>")]
-async fn process_login(login: Json<Login>, cookies: &CookieJar<'_>){
+async fn process_login(login: Json<Login>, cookies: &CookieJar<'_>) -> Redirect{
+    
     if login.username == "username" && login.password == "password"
     {
         println!("You have successfully entered uname and password");
-        cookies.add_private(Cookie::new("admin", "password"))
+        cookies.add_private(Cookie::new("admin", "benjamin"))
     }
+
+    Redirect::to("/login")
 }
 
-#[get("/login")]
-async fn login(cookies: &CookieJar<'_>) -> String {
-    match cookies.get_private_pending("admin"){
-        Some(_) => "You are in!".to_string(),
-        None => "You are not in!".to_string(),
-    }
+#[get("/login", rank = 1)]
+async fn logged_in(_admin: Admin) -> Json<LoginOutcome> {
+    Json(
+        LoginOutcome {
+            success: true
+        }
+    )
+}
+
+#[get("/login", rank = 2)]
+async fn login() -> Json<LoginOutcome> {
+    Json(
+        LoginOutcome {
+            success: false
+        }
+    )
+}
+
+#[post("/logout")]
+fn logout(cookies: &CookieJar<'_>)
+{
+    cookies.remove_private(Cookie::named("admin"));
 }
 
 
 #[options("/<_path..>")]
-async fn catch_preflight<'a>(_path: PathBuf){
+async fn catch_preflight<'a>(_path: PathBuf){ 
     //  Catches preflight OPTIONS requests which want CORS headers.
     //  Since our CORS fairing takes care of injecting those necessary headers,
     //  this handler doesn't need to do anything.
 }
 
 
+// These handle any authorized post, delete or put requests,
+// since all requests asking to modify the database contain the Admin guard.
+
+#[post("/<_path..>")]
+async fn catch_unauth_posts<'a>(_path: PathBuf) -> Status{
+    Status::Unauthorized
+}
+
+#[delete("/<_path..>")]
+async fn catch_unauth_deletes<'a>(_path: PathBuf) -> Status{
+    Status::Unauthorized
+}
+
+#[put("/<_path..>")]
+async fn catch_unauth_puts<'a>(_path: PathBuf) -> Status{
+    Status::Unauthorized
+}
+
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![get_projects, get_experiences, add_project, add_experience, catch_preflight, remove_experience, remove_project, process_login, login])
+    rocket::build().mount("/", routes![
+        get_projects, get_experiences,
+        add_project, add_experience,
+        remove_experience, remove_project,
+        process_login, login, logged_in, logout,
+        catch_unauth_posts, catch_unauth_deletes, catch_unauth_puts,
+        catch_preflight
+        ])
+
     .attach(DbConn::fairing())
     .attach(CORS)
 }
