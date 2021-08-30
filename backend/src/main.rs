@@ -15,7 +15,7 @@ use crate::models::*;
 use crate::schema::*;
 use crate::admin::Admin;
 use crate::database::DbConn;
-use crate::cors::CORS;
+use crate::cors::Cors;
 use rocket::http::{Cookie, CookieJar, Status};
 use rocket::response::Redirect;
 
@@ -50,11 +50,7 @@ async fn add_project(conn: DbConn, project: Json<NewProject>, _admin: Admin) -> 
             .get_results(conn)
         }).await.ok()?.pop();
 
-        match new_project
-        {
-            Some(x) => Some(Json(x)),
-            None => None
-        }
+        new_project.map(Json)
   
 }
 
@@ -68,11 +64,7 @@ async fn add_experience(conn: DbConn, experience: Json<NewExperience>, _admin: A
             .get_results(conn)
         }).await.ok()?.pop();
 
-        match new_experience
-        {
-            Some(x) => Some(Json(x)),
-            None => None
-        }
+        new_experience.map(Json)
   
 }
 
@@ -180,5 +172,5 @@ fn rocket() -> _ {
         ])
 
     .attach(DbConn::fairing())
-    .attach(CORS)
+    .attach(Cors)
 }
