@@ -201,7 +201,7 @@ function App() {
       {/* Placeholder Image */}
       <img src='https://www.benjaminlellouch.com/assets/images/profile/profile.png' alt="a broke boy" height="180" width="180" />
       <h1>Benjamin Lellouch</h1>
-      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logout" : "Login"} onClick={loggedIn ? logout : toggleLoginForm }/>
+      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logoute" : "Login"} onClick={loggedIn ? logout : toggleLoginForm }/>
  
 
       {/* Experience Form pop up */}
