@@ -1,4 +1,6 @@
-table! {
+// @generated automatically by Diesel CLI.
+
+diesel::table! {
     experiences (id) {
         id -> Int4,
         title -> Text,
@@ -9,7 +11,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     projects (id) {
         id -> Int4,
         title -> Text,
@@ -18,7 +20,7 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
+diesel::allow_tables_to_appear_in_same_query!(
     experiences,
     projects,
 );
