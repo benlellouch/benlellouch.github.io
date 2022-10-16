@@ -54,15 +54,14 @@ impl Component for Portfolio{
         if first_render{
             let link = ctx.link().clone();
             spawn_local( async move {
-            // let exp_endpoint = format!("{URL}/experiences");
-            // let fetch_exp: Vec<Experience> = Request::get(&exp_endpoint)
-            // .send()
-            // .await
-            // .unwrap()
-            // .json()
-            // .await
-            // .unwrap();
-            let fetch_exp = vec![];
+            let exp_endpoint = format!("{URL}/experiences");
+            let fetch_exp: Vec<Experience> = Request::get(&exp_endpoint)
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
 
             let proj_endpoint = format!("{URL}/projects");
             let fetch_proj: Vec<Project> = Request::get(&proj_endpoint)
