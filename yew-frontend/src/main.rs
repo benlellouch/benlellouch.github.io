@@ -8,7 +8,7 @@ const URL: &str = "http://127.0.0.1:8000/";
 
 enum Msg{
     Login,
-    Fetched_data(Vec<Experience>, Vec<Project>),
+    FetchedData(Vec<Experience>, Vec<Project>),
 }
 
 struct Portfolio{
@@ -30,18 +30,29 @@ impl Component for Portfolio{
         }
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html{
+    fn view(&self, _ctx: &Context<Self>) -> Html{
         html!{
-            <p>
-            {format!("{:?}", self.projects)}
-            </p>
+            <>
+            <div id="projects">
+                {
+                    self.projects.clone().into_iter().map(|project| {
+                        html!(
+                            <div key={project.id}>
+                            <a href={project.link}>{project.title}</a>
+                            <p>{project.description}</p>
+                            </div>
+                        )
+                    }).collect::<Html>()
+                }
+            </div>
+            </>
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg{
             Msg::Login => false,
-            Msg::Fetched_data(exp,proj ) => {
+            Msg::FetchedData(exp,proj ) => {
                 self.experiences = exp;
                 self.projects = proj;
                 true
@@ -72,7 +83,7 @@ impl Component for Portfolio{
             .await
             .unwrap();
 
-            link.send_message(Msg::Fetched_data(fetch_exp, fetch_proj));
+            link.send_message(Msg::FetchedData(fetch_exp, fetch_proj));
             }
         );
 
