@@ -38,8 +38,10 @@ impl Component for Portfolio {
         html! {
             <>
             <div id="projects">
-                {self.projects.len()}
                <ProjectList list={self.projects.clone()}/>
+            </div>
+            <div id="Experiences">
+                <ExperienceList list={self.experiences.clone()}/>
             </div>
             </>
         }

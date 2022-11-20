@@ -22,18 +22,14 @@ impl Component for ProjectList {
             .list
             .clone()
             .into_iter()
-            .map(|exp| {
+            .map(|proj| {
                 html!(
-                <ProjectCard project={exp}/>
+                <ProjectCard project={proj}/>
                 )
             })
             .collect::<Html>();
 
-        html!(
-
-        <div id="projects">
-        {list_content}  </div>
-        )
+        html!({ list_content })
     }
 }
 
@@ -43,22 +39,18 @@ pub struct Props {
 }
 
 #[derive(Clone)]
-pub struct ProjectCard {
-    props: Props,
-}
+pub struct ProjectCard {}
 
 impl Component for ProjectCard {
     type Message = ();
     type Properties = Props;
 
-    fn create(ctx: &Context<Self>) -> Self {
-        Self {
-            props: ctx.props().clone(),
-        }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let project = self.props.project.clone();
+        let project = ctx.props().project.clone();
         html! {
                    <div key={project.id}>
                     <a href={project.link}>{project.title}</a>

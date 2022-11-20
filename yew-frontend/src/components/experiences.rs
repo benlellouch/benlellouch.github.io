@@ -6,23 +6,19 @@ pub struct ListProps {
     pub list: Vec<Experience>,
 }
 
-pub struct ExperienceList {
-    props: ListProps,
-}
+pub struct ExperienceList {}
 
 impl Component for ExperienceList {
     type Message = ();
     type Properties = ListProps;
 
-    fn create(ctx: &Context<Self>) -> Self {
-        Self {
-            props: ctx.props().clone(),
-        }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let list_content = self
-            .props
+        let list_content = ctx
+            .props()
             .list
             .clone()
             .into_iter()
@@ -33,9 +29,7 @@ impl Component for ExperienceList {
             })
             .collect::<Html>();
 
-        html!(
-        <div id="experiences"> {list_content}  </div>
-        )
+        html!({ list_content })
     }
 }
 
@@ -45,22 +39,18 @@ pub struct Props {
 }
 
 #[derive(Clone)]
-pub struct ExperienceCard {
-    props: Props,
-}
+pub struct ExperienceCard {}
 
 impl Component for ExperienceCard {
     type Message = ();
     type Properties = Props;
 
-    fn create(ctx: &Context<Self>) -> Self {
-        Self {
-            props: ctx.props().clone(),
-        }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let experience = self.props.experience.clone();
+        let experience = ctx.props().experience.clone();
         html! {
                    <div key={experience.id}>
                     <a href={experience.org_link}>{experience.title}</a>
