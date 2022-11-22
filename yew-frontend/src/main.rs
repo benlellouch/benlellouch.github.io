@@ -2,18 +2,26 @@ mod components;
 mod model;
 
 use components::experiences::ExperienceList;
+use components::login_form::LoginForm;
 use components::projects::ProjectList;
-use model::{Experience, Project};
-use reqwasm::http::Request;
+use model::{Experience, Login, LoginOutcome, Project};
+
+use reqwasm::http::{Request, RequestCredentials};
 use serde::de::DeserializeOwned;
+use serde_json;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
 const URL: &str = "http://127.0.0.1:8000/";
 
 enum Msg {
-    Login,
-    FetchedData(Vec<Experience>, Vec<Project>),
+    Login(bool),
+    FetchedData(Resources),
+}
+
+struct Resources {
+    experiences: Vec<Experience>,
+    projects: Vec<Project>,
 }
 
 struct Portfolio {
@@ -34,25 +42,50 @@ impl Component for Portfolio {
         }
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let submit_login = {
+            let link = ctx.link().clone();
+            Callback::from(move |data: Login| {
+                let link = link.clone();
+                let payload = serde_json::to_string(&data).unwrap();
+                spawn_local(async move {
+                    let login_endpoint = format!("{URL}/login");
+                    let attempt_login: LoginOutcome = Request::post(&login_endpoint)
+                        .body(&payload)
+                        .credentials(RequestCredentials::Include)
+                        .send()
+                        .await
+                        .unwrap()
+                        .json()
+                        .await
+                        .unwrap();
+                    link.send_message(Msg::Login(attempt_login.success));
+                });
+            })
+        };
         html! {
             <>
+            <div>{if self.is_logged_in {"You are logged in"} else {"You are not logged in"} }</div>
             <div id="projects">
                <ProjectList list={self.projects.clone()}/>
             </div>
             <div id="Experiences">
                 <ExperienceList list={self.experiences.clone()}/>
             </div>
+            <LoginForm onsubmit={submit_login} />
             </>
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::Login => false,
-            Msg::FetchedData(exp, proj) => {
-                self.experiences = exp;
-                self.projects = proj;
+            Msg::Login(outcome) => {
+                self.is_logged_in = outcome;
+                true
+            }
+            Msg::FetchedData(res) => {
+                self.experiences = res.experiences;
+                self.projects = res.projects;
                 true
             }
         }
@@ -67,7 +100,10 @@ impl Component for Portfolio {
 
                 let proj_endpoint = format!("{URL}/projects");
                 let fetch_proj: Vec<Project> = fetch_collection(&proj_endpoint).await;
-                link.send_message(Msg::FetchedData(fetch_exp, fetch_proj));
+                link.send_message(Msg::FetchedData(Resources {
+                    experiences: fetch_exp,
+                    projects: fetch_proj,
+                }));
             });
         }
     }
