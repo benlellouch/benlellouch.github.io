@@ -10,7 +10,7 @@ use reqwasm::http::{Request, RequestCredentials};
 use serde::de::DeserializeOwned;
 use serde_json;
 use wasm_bindgen_futures::spawn_local;
-use yew::prelude::*;
+use yew::{html::Scope, prelude::*};
 
 const URL: &str = "http://127.0.0.1:8000/";
 
@@ -48,19 +48,7 @@ impl Component for Portfolio {
             Callback::from(move |data: Login| {
                 let link = link.clone();
                 let payload = serde_json::to_string(&data).unwrap();
-                spawn_local(async move {
-                    let login_endpoint = format!("{URL}/login");
-                    let attempt_login: LoginOutcome = Request::post(&login_endpoint)
-                        .body(&payload)
-                        .credentials(RequestCredentials::Include)
-                        .send()
-                        .await
-                        .unwrap()
-                        .json()
-                        .await
-                        .unwrap();
-                    link.send_message(Msg::Login(attempt_login.success));
-                });
+                login(link, payload);
             })
         };
         html! {
@@ -107,6 +95,22 @@ impl Component for Portfolio {
             });
         }
     }
+}
+
+fn login(link: Scope<Portfolio>, payload: String) {
+    spawn_local(async move {
+        let login_endpoint = format!("{URL}/login");
+        let attempt_login: LoginOutcome = Request::post(&login_endpoint)
+            .body(payload)
+            .credentials(RequestCredentials::Include)
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
+        link.send_message(Msg::Login(attempt_login.success));
+    });
 }
 
 async fn fetch_collection<T>(endpoint: &str) -> Vec<T>
