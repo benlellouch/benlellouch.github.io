@@ -1,2 +1,4 @@
 **/.env
 **/Rocket.toml
+**/target/
+**/Cargo.lock
