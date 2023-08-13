@@ -2,17 +2,18 @@
 name = "portfolio-website"
 version = "0.1.0"
 authors = ["benlellouch <brl1u18@soton.ac.uk>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = {version = "0.5.0-rc.1", features = ["json", "secrets"]}
-diesel = { version = "1.4.4", features = ["postgres"] }
-dotenv = "0.15.0"
+rocket = {version = "0.5.0-rc.3", features = ["json", "secrets"]}
+diesel = { version = "2.1.0", features = ["postgres", "time"] }
+dotenvy = "0.15"
 serde = {version = "1.0.129", features = ["derive"]}
+time = {version="0.3.25", features = ["serde"]}
 
 [dependencies.rocket_sync_db_pools]
-version = "0.1.0-rc.1"
+version = "0.1.0-rc.3"
 default-features = false
 features = ["diesel_postgres_pool"]
