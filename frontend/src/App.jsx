@@ -7,6 +7,7 @@ import { ExperienceForm } from './components/ExperienceForm'
 import { ProjectForm } from './components/ProjectForm'
 import { LoginForm } from './components/LoginForm'
 import { useDarkMode } from './hooks/useDarkMode'
+import { apiService } from './utils/api'
 
 function App() {
   const [projects, setProjects] = useState([])
@@ -35,8 +36,12 @@ function App() {
   // API Functions
   const loadProjects = async () => {
     try {
-      const projectsFromServer = await fetchProjects()
-      setProjects(projectsFromServer)
+      const result = await apiService.getAll('projects')
+      if (result.success) {
+        setProjects(result.data)
+      } else {
+        console.error('Failed to load projects:', result.error)
+      }
     } catch (error) {
       console.error('Failed to load projects:', error)
     }
@@ -44,8 +49,12 @@ function App() {
 
   const loadExperiences = async () => {
     try {
-      const experiencesFromServer = await fetchExperiences()
-      setExperiences(experiencesFromServer)
+      const result = await apiService.getAll('experiences')
+      if (result.success) {
+        setExperiences(result.data)
+      } else {
+        console.error('Failed to load experiences:', result.error)
+      }
     } catch (error) {
       console.error('Failed to load experiences:', error)
     }
@@ -53,8 +62,8 @@ function App() {
 
   const attemptAutoLogin = async () => {
     try {
-      const success = await alreadyLoggedIn()
-      if (success) {
+      const result = await apiService.auth.checkAuth()
+      if (result.success && result.data.success) {
         setLoggedIn(true)
       }
     } catch (error) {
@@ -62,40 +71,20 @@ function App() {
     }
   }
 
-  const fetchProjects = async () => {
-    const res = await fetch('http://localhost:8000/projects', {
-      credentials: 'include'
-    })
-    return await res.json()
-  }
-
-  const fetchExperiences = async () => {
-    const res = await fetch('http://localhost:8000/experiences')
-    return await res.json()
-  }
-
-  const alreadyLoggedIn = async () => {
-    const res = await fetch('http://localhost:8000/login', {
-      credentials: 'include',
-    })
-    const data = await res.json()
-    return data.success
-  }
-
   // Experience handlers
   const deleteExperience = async (id) => {
     try {
-      const res = await fetch(`http://localhost:8000/experiences/${id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      })
-
-      if (res.status === 200) {
+      const result = await apiService.delete('experiences', id)
+      console.log('Delete experience result:', result) // Debug logging
+      
+      if (result.success) {
         setExperiences(experiences.filter((exp) => exp.id !== id))
       } else {
-        alert('Failed to delete experience')
+        console.error('Delete failed:', result)
+        alert(`Failed to delete experience: ${result.error}`)
       }
     } catch (error) {
+      console.error('Delete error:', error)
       alert('Failed to delete experience')
     }
   }
@@ -105,23 +94,15 @@ function App() {
       setExperienceError('') // Clear any previous errors
       const { clearForm, ...experience } = experienceData
       
-      const res = await fetch('http://localhost:8000/experiences', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(experience),
-      })
+      const result = await apiService.create('experiences', experience)
 
-      if (res.status === 200) {
-        const data = await res.json()
-        setExperiences([...experiences, data])
+      if (result.success) {
+        setExperiences([...experiences, result.data])
         setExperienceError('')
         setShowExperienceForm(false)
         clearForm()
       } else {
-        setExperienceError('Failed to add experience. Please try again.')
+        setExperienceError(result.error || 'Failed to add experience. Please try again.')
       }
     } catch (error) {
       setExperienceError('Failed to add experience. Please check your connection.')
@@ -131,17 +112,17 @@ function App() {
   // Project handlers
   const deleteProject = async (id) => {
     try {
-      const res = await fetch(`http://localhost:8000/projects/${id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      })
-
-      if (res.status === 200) {
+      const result = await apiService.delete('projects', id)
+      console.log('Delete project result:', result) // Debug logging
+      
+      if (result.success) {
         setProjects(projects.filter((project) => project.id !== id))
       } else {
-        alert('Failed to delete project')
+        console.error('Delete failed:', result)
+        alert(`Failed to delete project: ${result.error}`)
       }
     } catch (error) {
+      console.error('Delete error:', error)
       alert('Failed to delete project')
     }
   }
@@ -151,23 +132,15 @@ function App() {
       setProjectError('') // Clear any previous errors
       const { clearForm, ...project } = projectData
       
-      const res = await fetch('http://localhost:8000/projects', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(project),
-      })
+      const result = await apiService.create('projects', project)
 
-      if (res.status === 200) {
-        const data = await res.json()
-        setProjects([...projects, data])
+      if (result.success) {
+        setProjects([...projects, result.data])
         setProjectError('')
         setShowProjectForm(false)
         clearForm()
       } else {
-        setProjectError('Failed to add project. Please try again.')
+        setProjectError(result.error || 'Failed to add project. Please try again.')
       }
     } catch (error) {
       setProjectError('Failed to add project. Please check your connection.')
@@ -178,18 +151,9 @@ function App() {
   const login = async (credentials) => {
     try {
       setLoginError('') // Clear any previous errors
-      const res = await fetch('http://localhost:8000/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      })
+      const result = await apiService.auth.login(credentials)
 
-      const data = await res.json()
-
-      if (data.success) {
+      if (result.success && result.data.success) {
         setLoggedIn(true)
         setShowLoginForm(false)
         setLoginError('')
@@ -203,24 +167,24 @@ function App() {
 
   const logout = async () => {
     try {
-      const res = await fetch('http://localhost:8000/logout', {
-        method: 'POST',
-        credentials: 'include'
-      })
+      const result = await apiService.auth.logout()
+      console.log('Logout result:', result) // Debug logging
 
-      if (res.status === 200) {
+      if (result.success) {
         setLoggedIn(false)
       } else {
-        alert('Failed to logout')
+        console.error('Logout failed:', result)
+        alert(`Failed to logout: ${result.error}`)
       }
     } catch (error) {
+      console.error('Logout error:', error)
       alert('Failed to logout')
     }
   }
 
   const handleLoginClick = async () => {
-    const alreadyAuthenticated = await alreadyLoggedIn()
-    if (alreadyAuthenticated) {
+    const result = await apiService.auth.checkAuth()
+    if (result.success && result.data.success) {
       setLoggedIn(true)
     } else {
       setLoginError('') // Clear any previous errors when opening login form
