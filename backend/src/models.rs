@@ -28,8 +28,7 @@ pub struct Experience {
     pub title: String,
     pub company: String,
     pub description: String,
-    pub start_date: Date,
-    pub end_date: Option<Date>,
+    pub year: String,
     pub org_link: String,
 }
 
@@ -40,8 +39,7 @@ pub struct NewExperience {
     pub title: String,
     pub company: String,
     pub description: String,
-    pub start_date: Date,
-    pub end_date: Option<Date>,
+    pub year: String,
     pub org_link: String,
 }
 

@@ -6,8 +6,7 @@ diesel::table! {
         title -> Text,
         company -> Text,
         description -> Text,
-        start_date -> Date,
-        end_date -> Nullable<Date>,
+        year -> Text,
         org_link -> Text,
     }
 }
@@ -30,8 +29,4 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(
-    experiences,
-    profiles,
-    projects,
-);
+diesel::allow_tables_to_appear_in_same_query!(experiences, profiles, projects,);

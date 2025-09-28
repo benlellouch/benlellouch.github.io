@@ -1,2 +1,2 @@
 [global.databases]
-postgres = { url = "postgres://postgres:password@localhost/newcontent"}
+postgres = { url = "postgres://newuser:password@localhost/newcontent"}

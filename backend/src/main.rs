@@ -150,7 +150,7 @@ async fn login() -> Json<LoginOutcome> {
 
 #[post("/logout")]
 fn logout(cookies: &CookieJar<'_>) {
-    cookies.remove_private(Cookie::named("admin"));
+    cookies.remove_private(Cookie::from("admin"));
 }
 
 #[options("/<_path..>")]

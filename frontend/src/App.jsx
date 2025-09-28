@@ -1,245 +1,310 @@
-import './App.css';
-import {useState, useEffect} from 'react'
-import Projects from './components/Projects';
-import Experiences from './components/Experiences';
-import Button from './components/Button';
-import ModalForm from './components/ModalForm';
-import { ExperienceForm } from './components/ExperienceForm';
-import { ProjectForm } from './components/ProjectForm';
-import { LoginForm } from './components/LoginForm';
-
+import React, { useState, useEffect } from 'react'
+import ItemList from './components/ItemList'
+import Button from './components/Button'
+import ModalForm from './components/ModalForm'
+import DarkModeToggle from './components/DarkModeToggle'
+import { ExperienceForm } from './components/ExperienceForm'
+import { ProjectForm } from './components/ProjectForm'
+import { LoginForm } from './components/LoginForm'
+import { useDarkMode } from './hooks/useDarkMode'
 
 function App() {
-
-  const [projects, setprojects] = useState([])
-  const [experiences, setexperiences] = useState([])
-
+  const [projects, setProjects] = useState([])
+  const [experiences, setExperiences] = useState([])
   const [showExperienceForm, setShowExperienceForm] = useState(false)
   const [showProjectForm, setShowProjectForm] = useState(false)
   const [showLoginForm, setShowLoginForm] = useState(false)
-
   const [loggedIn, setLoggedIn] = useState(false)
+  const [loginError, setLoginError] = useState('')
+  const [experienceError, setExperienceError] = useState('')
+  const [projectError, setProjectError] = useState('')
+  const { isDark, toggleDarkMode } = useDarkMode()
 
-
-
-  useEffect( () => {
-    const getProjects = async () => {
-      const projectsFromServer = await fetchProjects()
-      setprojects(projectsFromServer)
+  useEffect(() => {
+    const initializeApp = async () => {
+      await Promise.all([
+        loadProjects(),
+        loadExperiences(),
+        attemptAutoLogin()
+      ])
     }
 
-    const getExperiences = async () => {
-      const experiencesFromServer = await fetchExperiences()
-      setexperiences(experiencesFromServer)
-    }
-
-    const attemptLogin = async () => {
-      const success = await alreadyLoggedIn()
-      if (success === true)
-      {
-        setLoggedIn(true)
-      }
-    }
-
-    getProjects()
-    getExperiences()
-    attemptLogin()
-
-  
+    initializeApp()
   }, [])
 
+  // API Functions
+  const loadProjects = async () => {
+    try {
+      const projectsFromServer = await fetchProjects()
+      setProjects(projectsFromServer)
+    } catch (error) {
+      console.error('Failed to load projects:', error)
+    }
+  }
+
+  const loadExperiences = async () => {
+    try {
+      const experiencesFromServer = await fetchExperiences()
+      setExperiences(experiencesFromServer)
+    } catch (error) {
+      console.error('Failed to load experiences:', error)
+    }
+  }
+
+  const attemptAutoLogin = async () => {
+    try {
+      const success = await alreadyLoggedIn()
+      if (success) {
+        setLoggedIn(true)
+      }
+    } catch (error) {
+      console.error('Auto-login failed:', error)
+    }
+  }
 
   const fetchProjects = async () => {
     const res = await fetch('http://localhost:8000/projects', {
-      credentials: "include"
-    }
-    )
-    const data = await res.json()
-
-
-    return data
+      credentials: 'include'
+    })
+    return await res.json()
   }
-
 
   const fetchExperiences = async () => {
     const res = await fetch('http://localhost:8000/experiences')
-    const data = await res.json()
-
-    return data
+    return await res.json()
   }
-
-
-
-  const deleteExperience = async (id) => 
-  {
-    const res = await fetch(`http://localhost:8000/experiences/${id}`, {
-      method: 'DELETE',
-      credentials: 'include'
-    })
-
-    res.status === 200
-    ? setexperiences(experiences.filter((exp) => exp.id !== id))
-    : alert("Failed to delete experience")
-  }
-
-  const addExperience = async (experience) => 
-  {
-
-    const res = await fetch('http://localhost:8000/experiences', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(experience),
-    })
-
-    if (res.status === 200) {
-      const data = await res.json()
-      setexperiences([...experiences, data])
-    } else {
-      alert('Failed to add Experience.')
-    }
-  }
-
-  const deleteProject = async (id) => 
-  {
-    const res = await fetch(`http://localhost:8000/projects/${id}`, {
-      method: 'DELETE',
-      credentials : 'include'
-    })
-
-    res.status === 200
-    ? setprojects(projects.filter((exp) => exp.id !== id))
-    : alert("Failed to delete project")
-  }
-
-  const addProject = async (project) => 
-  {
-
-    const res = await fetch('http://localhost:8000/projects', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(project),
-    })
-
-    if (res.status === 200) {
-      const data = await res.json()
-      setprojects([...projects, data])
-    } else {
-      alert('Failed to add Project.')
-    }
-    
-  }
-
-  const login = async (form) => {
-
-    const res = await fetch('http://localhost:8000/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(form),
-    })
-
-    const data = await res.json()
-
-    if (data.success) {
-      setLoggedIn(true)
-      setShowLoginForm(false)
-    }
-  
-  }
-
-  const logout = async () => {
-    const res = await fetch('http://localhost:8000/logout',{
-      method: 'POST',
-      credentials: 'include'
-    })
-
-    res.status === 200
-    ? setLoggedIn(false)
-    : alert('Failed to logout')
-  }
-
-  const toggleExperienceForm = () => {
-    setShowExperienceForm(!showExperienceForm)
-  }
-
-  const toggleProjectForm = () => {
-    setShowProjectForm(!showProjectForm)
-  }
-
-  const toggleLoginForm = async () => {
-    if ((await alreadyLoggedIn()) === true){
-      console.log("I get here")
-      setLoggedIn(true)
-    } else
-    {
-      setShowLoginForm(true)
-    } 
-  }
-
 
   const alreadyLoggedIn = async () => {
     const res = await fetch('http://localhost:8000/login', {
-      credentials : 'include',
+      credentials: 'include',
     })
     const data = await res.json()
-    return data.success 
+    return data.success
   }
 
+  // Experience handlers
+  const deleteExperience = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/experiences/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
 
+      if (res.status === 200) {
+        setExperiences(experiences.filter((exp) => exp.id !== id))
+      } else {
+        alert('Failed to delete experience')
+      }
+    } catch (error) {
+      alert('Failed to delete experience')
+    }
+  }
+
+  const addExperience = async (experienceData) => {
+    try {
+      setExperienceError('') // Clear any previous errors
+      const { clearForm, ...experience } = experienceData
+      
+      const res = await fetch('http://localhost:8000/experiences', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(experience),
+      })
+
+      if (res.status === 200) {
+        const data = await res.json()
+        setExperiences([...experiences, data])
+        setExperienceError('')
+        setShowExperienceForm(false)
+        clearForm()
+      } else {
+        setExperienceError('Failed to add experience. Please try again.')
+      }
+    } catch (error) {
+      setExperienceError('Failed to add experience. Please check your connection.')
+    }
+  }
+
+  // Project handlers
+  const deleteProject = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/projects/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+
+      if (res.status === 200) {
+        setProjects(projects.filter((project) => project.id !== id))
+      } else {
+        alert('Failed to delete project')
+      }
+    } catch (error) {
+      alert('Failed to delete project')
+    }
+  }
+
+  const addProject = async (projectData) => {
+    try {
+      setProjectError('') // Clear any previous errors
+      const { clearForm, ...project } = projectData
+      
+      const res = await fetch('http://localhost:8000/projects', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(project),
+      })
+
+      if (res.status === 200) {
+        const data = await res.json()
+        setProjects([...projects, data])
+        setProjectError('')
+        setShowProjectForm(false)
+        clearForm()
+      } else {
+        setProjectError('Failed to add project. Please try again.')
+      }
+    } catch (error) {
+      setProjectError('Failed to add project. Please check your connection.')
+    }
+  }
+
+  // Auth handlers
+  const login = async (credentials) => {
+    try {
+      setLoginError('') // Clear any previous errors
+      const res = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      })
+
+      const data = await res.json()
+
+      if (data.success) {
+        setLoggedIn(true)
+        setShowLoginForm(false)
+        setLoginError('')
+      } else {
+        setLoginError('Incorrect username or password')
+      }
+    } catch (error) {
+      setLoginError('Login failed. Please try again.')
+    }
+  }
+
+  const logout = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/logout', {
+        method: 'POST',
+        credentials: 'include'
+      })
+
+      if (res.status === 200) {
+        setLoggedIn(false)
+      } else {
+        alert('Failed to logout')
+      }
+    } catch (error) {
+      alert('Failed to logout')
+    }
+  }
+
+  const handleLoginClick = async () => {
+    const alreadyAuthenticated = await alreadyLoggedIn()
+    if (alreadyAuthenticated) {
+      setLoggedIn(true)
+    } else {
+      setLoginError('') // Clear any previous errors when opening login form
+      setShowLoginForm(true)
+    }
+  }
 
   return (
-    <div className="App">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Dark Mode Toggle */}
+      <DarkModeToggle isDark={isDark} onToggle={toggleDarkMode} />
 
-      {/* Placeholder Image */}
-      <img src='https://www.benjaminlellouch.com/assets/images/profile/profile.png' alt="a broke boy" height="180" width="180" />
-      <h1>Benjamin Lellouch</h1>
-      <Button color={loggedIn ? "red" :"green"} text={loggedIn ? "Logout" : "Login"} onClick={loggedIn ? logout : toggleLoginForm }/>
- 
-
-      {/* Experience Form pop up */}
-      <div>{showExperienceForm ? <ModalForm form={
-        <ExperienceForm onClose={toggleExperienceForm} onAdd={addExperience}/>
-      }/> : null}
-      </div>
-
-      {/* Project Form pop up */}
-      <div>{showProjectForm ? <ModalForm form={
-        <ProjectForm onClose={toggleProjectForm} onAdd={addProject}/>
-      }/> : null}
-      </div>
-
-      {/* Login Form pop up */}
-      <div>{showLoginForm ? <ModalForm form={
-        <LoginForm onClose={() => setShowLoginForm(false)} onAdd={login}/>
-      }/> : null}
-      </div>
-
-
-
-      {/* Projects */}
-      <div>
-          <h2>Projects {loggedIn ? <Button text={"Add"} color={"green"} onClick={toggleProjectForm}/> : null}</h2>
-          <Projects projects={projects} onDelete={deleteProject} loggedIn={loggedIn}/>
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <img 
+              src="https://media.licdn.com/dms/image/v2/D4E03AQFdnuZAAnTQ_A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1663869957381?e=1761782400&v=beta&t=RBK2wAqWgo_XoDQr5RDRUH30AkVCSmsjnDvy5-FgG54" 
+              alt="Benjamin Lellouch" 
+              className="w-32 h-32 rounded-full mx-auto mb-4 object-cover shadow-lg"
+            />
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">Benjamin Lellouch</h1>
+            <Button
+              color={loggedIn ? "red" : "green"}
+              text={loggedIn ? "Logout" : "Login"}
+              onClick={loggedIn ? logout : handleLoginClick}
+            />
+          </div>
         </div>
+      </header>
 
-       {/* Experience */}
-      <div>
-          <h2>Experience {loggedIn ? <Button text={"Add"} color={"green"} onClick={toggleExperienceForm}/>: null}</h2>
-        <Experiences experiences={experiences} onDelete={deleteExperience} loggedIn={loggedIn}/>
-      </div>
-        
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8 space-y-12">
+        <ItemList
+          items={projects}
+          onDelete={deleteProject}
+          loggedIn={loggedIn}
+          type="project"
+          title="Projects"
+          onAdd={() => { setProjectError(''); setShowProjectForm(true); }}
+        />
 
-        
+        <ItemList
+          items={experiences}
+          onDelete={deleteExperience}
+          loggedIn={loggedIn}
+          type="experience"
+          title="Experience"
+          onAdd={() => { setExperienceError(''); setShowExperienceForm(true); }}
+        />
+      </main>
+
+      {/* Modals */}
+      {showExperienceForm && (
+        <ModalForm onClose={() => { setShowExperienceForm(false); setExperienceError(''); }}>
+          <ExperienceForm 
+            onClose={() => { setShowExperienceForm(false); setExperienceError(''); }} 
+            onAdd={addExperience}
+            error={experienceError}
+          />
+        </ModalForm>
+      )}
+
+      {showProjectForm && (
+        <ModalForm onClose={() => { setShowProjectForm(false); setProjectError(''); }}>
+          <ProjectForm 
+            onClose={() => { setShowProjectForm(false); setProjectError(''); }} 
+            onAdd={addProject}
+            error={projectError}
+          />
+        </ModalForm>
+      )}
+
+      {showLoginForm && (
+        <ModalForm onClose={() => { setShowLoginForm(false); setLoginError(''); }}>
+          <LoginForm 
+            onClose={() => { setShowLoginForm(false); setLoginError(''); }} 
+            onAdd={login}
+            error={loginError}
+          />
+        </ModalForm>
+      )}
     </div>
-  );
+  )
 }
 
 export default App;

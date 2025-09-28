@@ -11,8 +11,7 @@ CREATE TABLE experiences (
     title TEXT NOT NULL,
     company TEXT NOT NULL,
     description TEXT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE,
+    year TEXT NOT NULL,
     org_link TEXT NOT NULL
 );
 

@@ -1,4 +1,5 @@
 use rocket::request::{FromRequest, Outcome, Request};
+use rocket::http::Status;
 
 #[derive(Debug)]
 pub struct Admin(String);
@@ -12,7 +13,7 @@ impl<'r> FromRequest<'r> for Admin {
 
         match cookie {
             Some(cookie) => Outcome::Success(Admin(cookie.value().to_string())),
-            None => Outcome::Forward(()),
+            None => Outcome::Forward(Status::Unauthorized),
         }
     }
 }
