@@ -229,7 +229,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex flex-col">
       {/* Dark Mode Toggle */}
       <DarkModeToggle isDark={isDark} onToggle={toggleDarkMode} />
 
@@ -253,7 +253,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-12">
+      <main className="flex-1 max-w-4xl mx-auto px-4 py-8 space-y-12">
         <ItemList
           items={projects}
           onDelete={deleteProject}
@@ -272,6 +272,33 @@ function App() {
           onAdd={() => { setExperienceError(''); setShowExperienceForm(true); }}
         />
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300 mt-auto">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="text-center">
+            <p className="text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300 flex items-center justify-center gap-2 flex-wrap">
+              Made with 
+              <span className="text-red-500 text-base">❤️</span>
+              using
+              <span className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/20 px-2 py-1 rounded-md">
+                <span className="text-base">🦀</span>
+                Rust
+              </span>
+              and
+              <span className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900/20 px-2 py-1 rounded-md">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="1.5" fill="#61DAFB"/>
+                  <ellipse cx="12" cy="12" rx="11" ry="4.2" stroke="#61DAFB" strokeWidth="1" fill="none"/>
+                  <ellipse cx="12" cy="12" rx="11" ry="4.2" stroke="#61DAFB" strokeWidth="1" fill="none" transform="rotate(60 12 12)"/>
+                  <ellipse cx="12" cy="12" rx="11" ry="4.2" stroke="#61DAFB" strokeWidth="1" fill="none" transform="rotate(120 12 12)"/>
+                </svg>
+                React
+              </span>
+            </p>
+          </div>
+        </div>
+      </footer>
 
       {/* Modals */}
       {showExperienceForm && (
